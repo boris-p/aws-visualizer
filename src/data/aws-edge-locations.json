@@ -1,0 +1,557 @@
+{
+  "edgeLocations": [
+    {
+      "city": "Amsterdam",
+      "country": "Netherlands",
+      "lat": 52.37,
+      "lon": 4.89,
+      "count": 7
+    },
+    {
+      "city": "Atlanta",
+      "country": "United States",
+      "lat": 33.75,
+      "lon": -84.39,
+      "count": 6
+    },
+    {
+      "city": "Ashburn",
+      "country": "United States",
+      "lat": 39.04,
+      "lon": -77.49,
+      "count": 9
+    },
+    {
+      "city": "Auckland",
+      "country": "New Zealand",
+      "lat": -36.85,
+      "lon": 174.76,
+      "count": 2
+    },
+    {
+      "city": "Bangalore",
+      "country": "India",
+      "lat": 12.97,
+      "lon": 77.59,
+      "count": 5
+    },
+    {
+      "city": "Bangkok",
+      "country": "Thailand",
+      "lat": 13.76,
+      "lon": 100.50,
+      "count": 4
+    },
+    {
+      "city": "Beijing",
+      "country": "China",
+      "lat": 39.90,
+      "lon": 116.41,
+      "count": 3
+    },
+    {
+      "city": "Berlin",
+      "country": "Germany",
+      "lat": 52.52,
+      "lon": 13.40,
+      "count": 4
+    },
+    {
+      "city": "Bogota",
+      "country": "Colombia",
+      "lat": 4.71,
+      "lon": -74.07,
+      "count": 2
+    },
+    {
+      "city": "Boston",
+      "country": "United States",
+      "lat": 42.36,
+      "lon": -71.06,
+      "count": 3
+    },
+    {
+      "city": "Brussels",
+      "country": "Belgium",
+      "lat": 50.85,
+      "lon": 4.35,
+      "count": 2
+    },
+    {
+      "city": "Buenos Aires",
+      "country": "Argentina",
+      "lat": -34.60,
+      "lon": -58.38,
+      "count": 3
+    },
+    {
+      "city": "Cape Town",
+      "country": "South Africa",
+      "lat": -33.92,
+      "lon": 18.42,
+      "count": 2
+    },
+    {
+      "city": "Chennai",
+      "country": "India",
+      "lat": 13.08,
+      "lon": 80.27,
+      "count": 3
+    },
+    {
+      "city": "Chicago",
+      "country": "United States",
+      "lat": 41.88,
+      "lon": -87.63,
+      "count": 5
+    },
+    {
+      "city": "Copenhagen",
+      "country": "Denmark",
+      "lat": 55.68,
+      "lon": 12.57,
+      "count": 3
+    },
+    {
+      "city": "Dallas",
+      "country": "United States",
+      "lat": 32.78,
+      "lon": -96.80,
+      "count": 6
+    },
+    {
+      "city": "Denver",
+      "country": "United States",
+      "lat": 39.74,
+      "lon": -104.99,
+      "count": 3
+    },
+    {
+      "city": "Dubai",
+      "country": "United Arab Emirates",
+      "lat": 25.20,
+      "lon": 55.27,
+      "count": 4
+    },
+    {
+      "city": "Dublin",
+      "country": "Ireland",
+      "lat": 53.35,
+      "lon": -6.26,
+      "count": 5
+    },
+    {
+      "city": "Frankfurt",
+      "country": "Germany",
+      "lat": 50.11,
+      "lon": 8.68,
+      "count": 12
+    },
+    {
+      "city": "Helsinki",
+      "country": "Finland",
+      "lat": 60.17,
+      "lon": 24.94,
+      "count": 2
+    },
+    {
+      "city": "Hong Kong",
+      "country": "Hong Kong",
+      "lat": 22.32,
+      "lon": 114.17,
+      "count": 6
+    },
+    {
+      "city": "Houston",
+      "country": "United States",
+      "lat": 29.76,
+      "lon": -95.37,
+      "count": 4
+    },
+    {
+      "city": "Hyderabad",
+      "country": "India",
+      "lat": 17.39,
+      "lon": 78.49,
+      "count": 4
+    },
+    {
+      "city": "Jakarta",
+      "country": "Indonesia",
+      "lat": -6.21,
+      "lon": 106.85,
+      "count": 4
+    },
+    {
+      "city": "Johannesburg",
+      "country": "South Africa",
+      "lat": -26.20,
+      "lon": 28.05,
+      "count": 2
+    },
+    {
+      "city": "Kuala Lumpur",
+      "country": "Malaysia",
+      "lat": 3.14,
+      "lon": 101.69,
+      "count": 3
+    },
+    {
+      "city": "Las Vegas",
+      "country": "United States",
+      "lat": 36.17,
+      "lon": -115.14,
+      "count": 2
+    },
+    {
+      "city": "Lima",
+      "country": "Peru",
+      "lat": -12.05,
+      "lon": -77.04,
+      "count": 2
+    },
+    {
+      "city": "Lisbon",
+      "country": "Portugal",
+      "lat": 38.72,
+      "lon": -9.14,
+      "count": 2
+    },
+    {
+      "city": "London",
+      "country": "United Kingdom",
+      "lat": 51.51,
+      "lon": -0.13,
+      "count": 14
+    },
+    {
+      "city": "Los Angeles",
+      "country": "United States",
+      "lat": 34.05,
+      "lon": -118.24,
+      "count": 8
+    },
+    {
+      "city": "Madrid",
+      "country": "Spain",
+      "lat": 40.42,
+      "lon": -3.70,
+      "count": 4
+    },
+    {
+      "city": "Manchester",
+      "country": "United Kingdom",
+      "lat": 53.48,
+      "lon": -2.24,
+      "count": 2
+    },
+    {
+      "city": "Manila",
+      "country": "Philippines",
+      "lat": 14.60,
+      "lon": 120.98,
+      "count": 3
+    },
+    {
+      "city": "Marseille",
+      "country": "France",
+      "lat": 43.30,
+      "lon": 5.37,
+      "count": 2
+    },
+    {
+      "city": "Melbourne",
+      "country": "Australia",
+      "lat": -37.81,
+      "lon": 144.96,
+      "count": 2
+    },
+    {
+      "city": "Mexico City",
+      "country": "Mexico",
+      "lat": 19.43,
+      "lon": -99.13,
+      "count": 3
+    },
+    {
+      "city": "Miami",
+      "country": "United States",
+      "lat": 25.76,
+      "lon": -80.19,
+      "count": 6
+    },
+    {
+      "city": "Milan",
+      "country": "Italy",
+      "lat": 45.46,
+      "lon": 9.19,
+      "count": 4
+    },
+    {
+      "city": "Minneapolis",
+      "country": "United States",
+      "lat": 44.98,
+      "lon": -93.27,
+      "count": 2
+    },
+    {
+      "city": "Montreal",
+      "country": "Canada",
+      "lat": 45.50,
+      "lon": -73.57,
+      "count": 3
+    },
+    {
+      "city": "Mumbai",
+      "country": "India",
+      "lat": 19.08,
+      "lon": 72.88,
+      "count": 5
+    },
+    {
+      "city": "Munich",
+      "country": "Germany",
+      "lat": 48.14,
+      "lon": 11.58,
+      "count": 3
+    },
+    {
+      "city": "Nairobi",
+      "country": "Kenya",
+      "lat": -1.29,
+      "lon": 36.82,
+      "count": 2
+    },
+    {
+      "city": "New Delhi",
+      "country": "India",
+      "lat": 28.61,
+      "lon": 77.21,
+      "count": 6
+    },
+    {
+      "city": "New York",
+      "country": "United States",
+      "lat": 40.71,
+      "lon": -74.01,
+      "count": 9
+    },
+    {
+      "city": "Newark",
+      "country": "United States",
+      "lat": 40.74,
+      "lon": -74.17,
+      "count": 5
+    },
+    {
+      "city": "Osaka",
+      "country": "Japan",
+      "lat": 34.69,
+      "lon": 135.50,
+      "count": 5
+    },
+    {
+      "city": "Oslo",
+      "country": "Norway",
+      "lat": 59.91,
+      "lon": 10.75,
+      "count": 2
+    },
+    {
+      "city": "Palermo",
+      "country": "Italy",
+      "lat": 38.12,
+      "lon": 13.36,
+      "count": 1
+    },
+    {
+      "city": "Paris",
+      "country": "France",
+      "lat": 48.86,
+      "lon": 2.35,
+      "count": 9
+    },
+    {
+      "city": "Perth",
+      "country": "Australia",
+      "lat": -31.95,
+      "lon": 115.86,
+      "count": 1
+    },
+    {
+      "city": "Phoenix",
+      "country": "United States",
+      "lat": 33.45,
+      "lon": -112.07,
+      "count": 3
+    },
+    {
+      "city": "Portland",
+      "country": "United States",
+      "lat": 45.52,
+      "lon": -122.68,
+      "count": 2
+    },
+    {
+      "city": "Prague",
+      "country": "Czech Republic",
+      "lat": 50.08,
+      "lon": 14.44,
+      "count": 2
+    },
+    {
+      "city": "Pune",
+      "country": "India",
+      "lat": 18.52,
+      "lon": 73.86,
+      "count": 2
+    },
+    {
+      "city": "Rio de Janeiro",
+      "country": "Brazil",
+      "lat": -22.91,
+      "lon": -43.17,
+      "count": 3
+    },
+    {
+      "city": "Rome",
+      "country": "Italy",
+      "lat": 41.90,
+      "lon": 12.50,
+      "count": 2
+    },
+    {
+      "city": "San Francisco",
+      "country": "United States",
+      "lat": 37.77,
+      "lon": -122.42,
+      "count": 7
+    },
+    {
+      "city": "Santiago",
+      "country": "Chile",
+      "lat": -33.45,
+      "lon": -70.67,
+      "count": 2
+    },
+    {
+      "city": "Sao Paulo",
+      "country": "Brazil",
+      "lat": -23.55,
+      "lon": -46.63,
+      "count": 5
+    },
+    {
+      "city": "Seattle",
+      "country": "United States",
+      "lat": 47.61,
+      "lon": -122.33,
+      "count": 6
+    },
+    {
+      "city": "Seoul",
+      "country": "South Korea",
+      "lat": 37.57,
+      "lon": 126.98,
+      "count": 8
+    },
+    {
+      "city": "Shanghai",
+      "country": "China",
+      "lat": 31.23,
+      "lon": 121.47,
+      "count": 4
+    },
+    {
+      "city": "Shenzhen",
+      "country": "China",
+      "lat": 22.54,
+      "lon": 114.06,
+      "count": 2
+    },
+    {
+      "city": "Singapore",
+      "country": "Singapore",
+      "lat": 1.35,
+      "lon": 103.82,
+      "count": 8
+    },
+    {
+      "city": "Sofia",
+      "country": "Bulgaria",
+      "lat": 42.70,
+      "lon": 23.32,
+      "count": 1
+    },
+    {
+      "city": "Stockholm",
+      "country": "Sweden",
+      "lat": 59.33,
+      "lon": 18.07,
+      "count": 4
+    },
+    {
+      "city": "Sydney",
+      "country": "Australia",
+      "lat": -33.87,
+      "lon": 151.21,
+      "count": 5
+    },
+    {
+      "city": "Taipei",
+      "country": "Taiwan",
+      "lat": 25.03,
+      "lon": 121.57,
+      "count": 4
+    },
+    {
+      "city": "Tel Aviv",
+      "country": "Israel",
+      "lat": 32.09,
+      "lon": 34.78,
+      "count": 3
+    },
+    {
+      "city": "Tokyo",
+      "country": "Japan",
+      "lat": 35.68,
+      "lon": 139.69,
+      "count": 20
+    },
+    {
+      "city": "Toronto",
+      "country": "Canada",
+      "lat": 43.65,
+      "lon": -79.38,
+      "count": 4
+    },
+    {
+      "city": "Vancouver",
+      "country": "Canada",
+      "lat": 49.28,
+      "lon": -123.12,
+      "count": 2
+    },
+    {
+      "city": "Vienna",
+      "country": "Austria",
+      "lat": 48.21,
+      "lon": 16.37,
+      "count": 3
+    },
+    {
+      "city": "Warsaw",
+      "country": "Poland",
+      "lat": 52.23,
+      "lon": 21.01,
+      "count": 3
+    },
+    {
+      "city": "Zurich",
+      "country": "Switzerland",
+      "lat": 47.37,
+      "lon": 8.54,
+      "count": 3
+    }
+  ]
+}

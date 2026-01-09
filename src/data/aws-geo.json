@@ -1,0 +1,402 @@
+{
+  "partitions": [
+    {
+      "id": "aws",
+      "label": "Commercial AWS",
+      "color": "#0066cc",
+      "regions": [
+        {
+          "id": "us-east-1",
+          "name": "US East (N. Virginia)",
+          "lat": 38.13,
+          "lon": -78.45,
+          "azs": [
+            { "id": "use1-az1", "letters": ["us-east-1a"] },
+            { "id": "use1-az2", "letters": ["us-east-1b"] },
+            { "id": "use1-az3", "letters": ["us-east-1c"] },
+            { "id": "use1-az4", "letters": ["us-east-1d"] },
+            { "id": "use1-az5", "letters": ["us-east-1e"] },
+            { "id": "use1-az6", "letters": ["us-east-1f"] }
+          ]
+        },
+        {
+          "id": "us-east-2",
+          "name": "US East (Ohio)",
+          "lat": 40.42,
+          "lon": -83.0,
+          "azs": [
+            { "id": "use2-az1", "letters": ["us-east-2a"] },
+            { "id": "use2-az2", "letters": ["us-east-2b"] },
+            { "id": "use2-az3", "letters": ["us-east-2c"] }
+          ]
+        },
+        {
+          "id": "us-west-1",
+          "name": "US West (N. California)",
+          "lat": 37.35,
+          "lon": -121.96,
+          "azs": [
+            { "id": "usw1-az1", "letters": ["us-west-1a"] },
+            { "id": "usw1-az3", "letters": ["us-west-1c"] }
+          ]
+        },
+        {
+          "id": "us-west-2",
+          "name": "US West (Oregon)",
+          "lat": 45.84,
+          "lon": -119.7,
+          "azs": [
+            { "id": "usw2-az1", "letters": ["us-west-2a"] },
+            { "id": "usw2-az2", "letters": ["us-west-2b"] },
+            { "id": "usw2-az3", "letters": ["us-west-2c"] },
+            { "id": "usw2-az4", "letters": ["us-west-2d"] }
+          ]
+        },
+        {
+          "id": "ca-central-1",
+          "name": "Canada (Central)",
+          "lat": 45.5,
+          "lon": -73.6,
+          "azs": [
+            { "id": "cac1-az1", "letters": ["ca-central-1a"] },
+            { "id": "cac1-az2", "letters": ["ca-central-1b"] },
+            { "id": "cac1-az4", "letters": ["ca-central-1d"] }
+          ]
+        },
+        {
+          "id": "ca-west-1",
+          "name": "Canada (Calgary)",
+          "lat": 51.05,
+          "lon": -114.07,
+          "azs": [
+            { "id": "caw1-az1", "letters": ["ca-west-1a"] },
+            { "id": "caw1-az2", "letters": ["ca-west-1b"] }
+          ]
+        },
+        {
+          "id": "eu-west-1",
+          "name": "Europe (Ireland)",
+          "lat": 53.35,
+          "lon": -6.26,
+          "azs": [
+            { "id": "euw1-az1", "letters": ["eu-west-1a"] },
+            { "id": "euw1-az2", "letters": ["eu-west-1b"] },
+            { "id": "euw1-az3", "letters": ["eu-west-1c"] }
+          ]
+        },
+        {
+          "id": "eu-west-2",
+          "name": "Europe (London)",
+          "lat": 51.51,
+          "lon": -0.13,
+          "azs": [
+            { "id": "euw2-az1", "letters": ["eu-west-2a"] },
+            { "id": "euw2-az2", "letters": ["eu-west-2b"] },
+            { "id": "euw2-az3", "letters": ["eu-west-2c"] }
+          ]
+        },
+        {
+          "id": "eu-west-3",
+          "name": "Europe (Paris)",
+          "lat": 48.86,
+          "lon": 2.35,
+          "azs": [
+            { "id": "euw3-az1", "letters": ["eu-west-3a"] },
+            { "id": "euw3-az2", "letters": ["eu-west-3b"] },
+            { "id": "euw3-az3", "letters": ["eu-west-3c"] }
+          ]
+        },
+        {
+          "id": "eu-central-1",
+          "name": "Europe (Frankfurt)",
+          "lat": 50.11,
+          "lon": 8.68,
+          "azs": [
+            { "id": "euc1-az1", "letters": ["eu-central-1a"] },
+            { "id": "euc1-az2", "letters": ["eu-central-1b"] },
+            { "id": "euc1-az3", "letters": ["eu-central-1c"] }
+          ]
+        },
+        {
+          "id": "eu-central-2",
+          "name": "Europe (Zurich)",
+          "lat": 47.38,
+          "lon": 8.54,
+          "azs": [
+            { "id": "euc2-az1", "letters": ["eu-central-2a"] },
+            { "id": "euc2-az2", "letters": ["eu-central-2b"] },
+            { "id": "euc2-az3", "letters": ["eu-central-2c"] }
+          ]
+        },
+        {
+          "id": "eu-north-1",
+          "name": "Europe (Stockholm)",
+          "lat": 59.33,
+          "lon": 18.07,
+          "azs": [
+            { "id": "eun1-az1", "letters": ["eu-north-1a"] },
+            { "id": "eun1-az2", "letters": ["eu-north-1b"] },
+            { "id": "eun1-az3", "letters": ["eu-north-1c"] }
+          ]
+        },
+        {
+          "id": "eu-south-1",
+          "name": "Europe (Milan)",
+          "lat": 45.46,
+          "lon": 9.19,
+          "azs": [
+            { "id": "eus1-az1", "letters": ["eu-south-1a"] },
+            { "id": "eus1-az2", "letters": ["eu-south-1b"] },
+            { "id": "eus1-az3", "letters": ["eu-south-1c"] }
+          ]
+        },
+        {
+          "id": "eu-south-2",
+          "name": "Europe (Spain)",
+          "lat": 40.42,
+          "lon": -3.7,
+          "azs": [
+            { "id": "eus2-az1", "letters": ["eu-south-2a"] },
+            { "id": "eus2-az2", "letters": ["eu-south-2b"] },
+            { "id": "eus2-az3", "letters": ["eu-south-2c"] }
+          ]
+        },
+        {
+          "id": "ap-south-1",
+          "name": "Asia Pacific (Mumbai)",
+          "lat": 19.08,
+          "lon": 72.88,
+          "azs": [
+            { "id": "aps1-az1", "letters": ["ap-south-1a"] },
+            { "id": "aps1-az2", "letters": ["ap-south-1b"] },
+            { "id": "aps1-az3", "letters": ["ap-south-1c"] }
+          ]
+        },
+        {
+          "id": "ap-south-2",
+          "name": "Asia Pacific (Hyderabad)",
+          "lat": 17.39,
+          "lon": 78.49,
+          "azs": [
+            { "id": "aps2-az1", "letters": ["ap-south-2a"] },
+            { "id": "aps2-az2", "letters": ["ap-south-2b"] },
+            { "id": "aps2-az3", "letters": ["ap-south-2c"] }
+          ]
+        },
+        {
+          "id": "ap-northeast-1",
+          "name": "Asia Pacific (Tokyo)",
+          "lat": 35.68,
+          "lon": 139.77,
+          "azs": [
+            { "id": "apne1-az1", "letters": ["ap-northeast-1a"] },
+            { "id": "apne1-az2", "letters": ["ap-northeast-1c"] },
+            { "id": "apne1-az4", "letters": ["ap-northeast-1d"] }
+          ]
+        },
+        {
+          "id": "ap-northeast-2",
+          "name": "Asia Pacific (Seoul)",
+          "lat": 37.57,
+          "lon": 126.98,
+          "azs": [
+            { "id": "apne2-az1", "letters": ["ap-northeast-2a"] },
+            { "id": "apne2-az2", "letters": ["ap-northeast-2b"] },
+            { "id": "apne2-az3", "letters": ["ap-northeast-2c"] },
+            { "id": "apne2-az4", "letters": ["ap-northeast-2d"] }
+          ]
+        },
+        {
+          "id": "ap-northeast-3",
+          "name": "Asia Pacific (Osaka)",
+          "lat": 34.69,
+          "lon": 135.5,
+          "azs": [
+            { "id": "apne3-az1", "letters": ["ap-northeast-3a"] },
+            { "id": "apne3-az2", "letters": ["ap-northeast-3b"] },
+            { "id": "apne3-az3", "letters": ["ap-northeast-3c"] }
+          ]
+        },
+        {
+          "id": "ap-southeast-1",
+          "name": "Asia Pacific (Singapore)",
+          "lat": 1.35,
+          "lon": 103.82,
+          "azs": [
+            { "id": "apse1-az1", "letters": ["ap-southeast-1a"] },
+            { "id": "apse1-az2", "letters": ["ap-southeast-1b"] },
+            { "id": "apse1-az3", "letters": ["ap-southeast-1c"] }
+          ]
+        },
+        {
+          "id": "ap-southeast-2",
+          "name": "Asia Pacific (Sydney)",
+          "lat": -33.87,
+          "lon": 151.21,
+          "azs": [
+            { "id": "apse2-az1", "letters": ["ap-southeast-2a"] },
+            { "id": "apse2-az2", "letters": ["ap-southeast-2b"] },
+            { "id": "apse2-az3", "letters": ["ap-southeast-2c"] }
+          ]
+        },
+        {
+          "id": "ap-southeast-3",
+          "name": "Asia Pacific (Jakarta)",
+          "lat": -6.21,
+          "lon": 106.85,
+          "azs": [
+            { "id": "apse3-az1", "letters": ["ap-southeast-3a"] },
+            { "id": "apse3-az2", "letters": ["ap-southeast-3b"] },
+            { "id": "apse3-az3", "letters": ["ap-southeast-3c"] }
+          ]
+        },
+        {
+          "id": "ap-southeast-4",
+          "name": "Asia Pacific (Melbourne)",
+          "lat": -37.81,
+          "lon": 144.96,
+          "azs": [
+            { "id": "apse4-az1", "letters": ["ap-southeast-4a"] },
+            { "id": "apse4-az2", "letters": ["ap-southeast-4b"] },
+            { "id": "apse4-az3", "letters": ["ap-southeast-4c"] }
+          ]
+        },
+        {
+          "id": "ap-southeast-5",
+          "name": "Asia Pacific (Malaysia)",
+          "lat": 3.14,
+          "lon": 101.69,
+          "azs": [
+            { "id": "apse5-az1", "letters": ["ap-southeast-5a"] },
+            { "id": "apse5-az2", "letters": ["ap-southeast-5b"] },
+            { "id": "apse5-az3", "letters": ["ap-southeast-5c"] }
+          ]
+        },
+        {
+          "id": "ap-east-1",
+          "name": "Asia Pacific (Hong Kong)",
+          "lat": 22.32,
+          "lon": 114.17,
+          "azs": [
+            { "id": "ape1-az1", "letters": ["ap-east-1a"] },
+            { "id": "ape1-az2", "letters": ["ap-east-1b"] },
+            { "id": "ape1-az3", "letters": ["ap-east-1c"] }
+          ]
+        },
+        {
+          "id": "sa-east-1",
+          "name": "South America (Sao Paulo)",
+          "lat": -23.55,
+          "lon": -46.63,
+          "azs": [
+            { "id": "sae1-az1", "letters": ["sa-east-1a"] },
+            { "id": "sae1-az2", "letters": ["sa-east-1b"] },
+            { "id": "sae1-az3", "letters": ["sa-east-1c"] }
+          ]
+        },
+        {
+          "id": "me-south-1",
+          "name": "Middle East (Bahrain)",
+          "lat": 26.07,
+          "lon": 50.56,
+          "azs": [
+            { "id": "mes1-az1", "letters": ["me-south-1a"] },
+            { "id": "mes1-az2", "letters": ["me-south-1b"] },
+            { "id": "mes1-az3", "letters": ["me-south-1c"] }
+          ]
+        },
+        {
+          "id": "me-central-1",
+          "name": "Middle East (UAE)",
+          "lat": 24.47,
+          "lon": 54.37,
+          "azs": [
+            { "id": "mec1-az1", "letters": ["me-central-1a"] },
+            { "id": "mec1-az2", "letters": ["me-central-1b"] },
+            { "id": "mec1-az3", "letters": ["me-central-1c"] }
+          ]
+        },
+        {
+          "id": "il-central-1",
+          "name": "Israel (Tel Aviv)",
+          "lat": 32.08,
+          "lon": 34.78,
+          "azs": [
+            { "id": "ilc1-az1", "letters": ["il-central-1a"] },
+            { "id": "ilc1-az2", "letters": ["il-central-1b"] },
+            { "id": "ilc1-az3", "letters": ["il-central-1c"] }
+          ]
+        },
+        {
+          "id": "af-south-1",
+          "name": "Africa (Cape Town)",
+          "lat": -33.93,
+          "lon": 18.42,
+          "azs": [
+            { "id": "afs1-az1", "letters": ["af-south-1a"] },
+            { "id": "afs1-az2", "letters": ["af-south-1b"] },
+            { "id": "afs1-az3", "letters": ["af-south-1c"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aws-cn",
+      "label": "AWS China",
+      "color": "#dc2626",
+      "regions": [
+        {
+          "id": "cn-north-1",
+          "name": "China (Beijing)",
+          "lat": 39.9,
+          "lon": 116.4,
+          "azs": [
+            { "id": "cnn1-az1", "letters": ["cn-north-1a"] },
+            { "id": "cnn1-az2", "letters": ["cn-north-1b"] },
+            { "id": "cnn1-az3", "letters": ["cn-north-1c"] }
+          ]
+        },
+        {
+          "id": "cn-northwest-1",
+          "name": "China (Ningxia)",
+          "lat": 37.5,
+          "lon": 106.27,
+          "azs": [
+            { "id": "cnnw1-az1", "letters": ["cn-northwest-1a"] },
+            { "id": "cnnw1-az2", "letters": ["cn-northwest-1b"] },
+            { "id": "cnnw1-az3", "letters": ["cn-northwest-1c"] }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "aws-us-gov",
+      "label": "AWS GovCloud",
+      "color": "#ea580c",
+      "regions": [
+        {
+          "id": "us-gov-west-1",
+          "name": "GovCloud (US-West)",
+          "lat": 45.84,
+          "lon": -122.7,
+          "azs": [
+            { "id": "usgw1-az1", "letters": ["us-gov-west-1a"] },
+            { "id": "usgw1-az2", "letters": ["us-gov-west-1b"] },
+            { "id": "usgw1-az3", "letters": ["us-gov-west-1c"] }
+          ]
+        },
+        {
+          "id": "us-gov-east-1",
+          "name": "GovCloud (US-East)",
+          "lat": 38.13,
+          "lon": -81.45,
+          "azs": [
+            { "id": "usge1-az1", "letters": ["us-gov-east-1a"] },
+            { "id": "usge1-az2", "letters": ["us-gov-east-1b"] },
+            { "id": "usge1-az3", "letters": ["us-gov-east-1c"] }
+          ]
+        }
+      ]
+    }
+  ]
+}
