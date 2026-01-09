@@ -1,20 +1,16 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import WorldMap, { type EdgeLocation } from '@/components/aws/WorldMap'
+import HierarchyGraph from '@/components/aws/HierarchyGraph'
 import PartitionFilter from '@/components/aws/PartitionFilter'
-import PartitionLegend from '@/components/aws/PartitionLegend'
-import RegionDetailsPanel from '@/components/aws/RegionDetailsPanel'
-import EdgeLocationDetailsPanel from '@/components/aws/EdgeLocationDetailsPanel'
 import Navigation from '@/components/Navigation'
-import type { Region, PartitionId } from '@/types/aws'
+import type { PartitionId } from '@/types/aws'
 
-export default function AWSGeographyPage() {
-  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null)
-  const [selectedEdgeLocation, setSelectedEdgeLocation] = useState<EdgeLocation | null>(null)
+export default function AWSHierarchyPage() {
   const [visiblePartitions, setVisiblePartitions] = useState<Set<PartitionId>>(
     new Set(['aws', 'aws-cn', 'aws-us-gov'])
   )
-  const [showEdgeLocations, setShowEdgeLocations] = useState(false)
+  const [showEdgeLocations, setShowEdgeLocations] = useState(true)
+  const [showDataCenters, setShowDataCenters] = useState(false)
 
   const togglePartition = (id: PartitionId) => {
     setVisiblePartitions((prev) => {
@@ -45,6 +41,15 @@ export default function AWSGeographyPage() {
             />
             <span className="text-[#16a34a]">edge locations</span>
           </label>
+          <label className="flex items-center gap-2 text-xs cursor-pointer">
+            <input
+              type="checkbox"
+              checked={showDataCenters}
+              onChange={(e) => setShowDataCenters(e.target.checked)}
+              className="w-3.5 h-3.5 accent-[#999] cursor-pointer"
+            />
+            <span className="text-[#999]">data centers</span>
+          </label>
           <PartitionFilter
             visiblePartitions={visiblePartitions}
             onToggle={togglePartition}
@@ -52,34 +57,12 @@ export default function AWSGeographyPage() {
         </div>
       </header>
 
-      <main className="relative h-[calc(100vh-57px)]">
-        <WorldMap
+      <main className="h-[calc(100vh-57px)]">
+        <HierarchyGraph
           visiblePartitions={visiblePartitions}
-          onSelectRegion={(region) => {
-            setSelectedRegion(region)
-            setSelectedEdgeLocation(null)
-          }}
-          selectedRegion={selectedRegion}
           showEdgeLocations={showEdgeLocations}
-          onSelectEdgeLocation={(edgeLoc) => {
-            setSelectedEdgeLocation(edgeLoc)
-            setSelectedRegion(null)
-          }}
-          selectedEdgeLocation={selectedEdgeLocation}
+          showDataCenters={showDataCenters}
         />
-        <PartitionLegend />
-        {selectedRegion && (
-          <RegionDetailsPanel
-            region={selectedRegion}
-            onClose={() => setSelectedRegion(null)}
-          />
-        )}
-        {selectedEdgeLocation && (
-          <EdgeLocationDetailsPanel
-            edgeLocation={selectedEdgeLocation}
-            onClose={() => setSelectedEdgeLocation(null)}
-          />
-        )}
       </main>
     </div>
   )
