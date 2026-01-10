@@ -1,0 +1,210 @@
+{
+  "id": "ec2-scenario-playground",
+  "name": "EC2 Multi-AZ Scenario",
+  "description": "Focused view of us-east-1 with 2 AZs for demonstrating failover scenarios",
+  "nodes": [
+    {
+      "id": "edge-sfo",
+      "label": "San Francisco",
+      "type": "edge",
+      "position": { "x": 50, "y": 150 },
+      "style": {
+        "background": "#f0fdf4",
+        "border": "2px solid #16a34a",
+        "borderRadius": "6px",
+        "padding": "8px 16px",
+        "fontSize": "11px",
+        "color": "#16a34a"
+      }
+    },
+    {
+      "id": "region-us-east-1",
+      "label": "us-east-1",
+      "type": "region",
+      "position": { "x": 300, "y": 150 },
+      "style": {
+        "background": "#ffffff",
+        "border": "2px solid #0066cc",
+        "borderRadius": "6px",
+        "padding": "10px 20px",
+        "fontSize": "13px",
+        "color": "#0066cc"
+      }
+    },
+    {
+      "id": "az-us-east-1-use1-az1",
+      "label": "use1-az1",
+      "type": "az",
+      "position": { "x": 550, "y": 100 },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontSize": "11px",
+        "color": "#888",
+        "cursor": "pointer"
+      }
+    },
+    {
+      "id": "az-us-east-1-use1-az2",
+      "label": "use1-az2",
+      "type": "az",
+      "position": { "x": 550, "y": 200 },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontSize": "11px",
+        "color": "#888",
+        "cursor": "pointer"
+      }
+    },
+    {
+      "id": "dc-us-east-1-use1-az1-1",
+      "label": "DC-1",
+      "type": "dc",
+      "position": { "x": 750, "y": 85 },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontSize": "9px",
+        "color": "#999",
+        "cursor": "pointer"
+      }
+    },
+    {
+      "id": "dc-us-east-1-use1-az1-2",
+      "label": "DC-2",
+      "type": "dc",
+      "position": { "x": 750, "y": 115 },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontSize": "9px",
+        "color": "#999",
+        "cursor": "pointer"
+      }
+    },
+    {
+      "id": "dc-us-east-1-use1-az2-1",
+      "label": "DC-1",
+      "type": "dc",
+      "position": { "x": 750, "y": 185 },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontSize": "9px",
+        "color": "#999",
+        "cursor": "pointer"
+      }
+    },
+    {
+      "id": "dc-us-east-1-use1-az2-2",
+      "label": "DC-2",
+      "type": "dc",
+      "position": { "x": 750, "y": 215 },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontSize": "9px",
+        "color": "#999",
+        "cursor": "pointer"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-sfo-region-us-east-1",
+      "source": "edge-sfo",
+      "target": "region-us-east-1",
+      "type": "smoothstep",
+      "style": {
+        "stroke": "#16a34a",
+        "strokeWidth": 1.5,
+        "opacity": 0.3
+      }
+    },
+    {
+      "id": "region-us-east-1-az-us-east-1-use1-az1",
+      "source": "region-us-east-1",
+      "target": "az-us-east-1-use1-az1",
+      "type": "smoothstep",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.25
+      }
+    },
+    {
+      "id": "region-us-east-1-az-us-east-1-use1-az2",
+      "source": "region-us-east-1",
+      "target": "az-us-east-1-use1-az2",
+      "type": "smoothstep",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.25
+      }
+    },
+    {
+      "id": "az-us-east-1-use1-az1-dc-us-east-1-use1-az1-1",
+      "source": "az-us-east-1-use1-az1",
+      "target": "dc-us-east-1-use1-az1-1",
+      "type": "smoothstep",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.2
+      }
+    },
+    {
+      "id": "az-us-east-1-use1-az1-dc-us-east-1-use1-az1-2",
+      "source": "az-us-east-1-use1-az1",
+      "target": "dc-us-east-1-use1-az1-2",
+      "type": "smoothstep",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.2
+      }
+    },
+    {
+      "id": "az-us-east-1-use1-az2-dc-us-east-1-use1-az2-1",
+      "source": "az-us-east-1-use1-az2",
+      "target": "dc-us-east-1-use1-az2-1",
+      "type": "smoothstep",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.2
+      }
+    },
+    {
+      "id": "az-us-east-1-use1-az2-dc-us-east-1-use1-az2-2",
+      "source": "az-us-east-1-use1-az2",
+      "target": "dc-us-east-1-use1-az2-2",
+      "type": "smoothstep",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.2
+      }
+    }
+  ]
+}

@@ -1,9 +1,14 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import HierarchyGraph from '@/components/aws/HierarchyGraph'
 import PartitionFilter from '@/components/aws/PartitionFilter'
 import Navigation from '@/components/Navigation'
+import { useScenarioPlayer } from '@/hooks/useScenarioPlayer'
+import ScenarioSelector from '@/components/scenarios/ScenarioSelector'
+import ScenarioPlayerControls from '@/components/scenarios/ScenarioPlayerControls'
+import ScenarioInfo from '@/components/scenarios/ScenarioInfo'
 import type { PartitionId } from '@/types/aws'
+import type { Scenario } from '@/types/scenario'
 
 export default function AWSHierarchyPage() {
   const [visiblePartitions, setVisiblePartitions] = useState<Set<PartitionId>>(
@@ -11,6 +16,31 @@ export default function AWSHierarchyPage() {
   )
   const [showEdgeLocations, setShowEdgeLocations] = useState(true)
   const [showDataCenters, setShowDataCenters] = useState(false)
+
+  // Scenario state
+  const [scenarios, setScenarios] = useState<Scenario[]>([])
+  const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null)
+  const selectedScenario = scenarios.find(s => s.id === selectedScenarioId) || null
+
+  // Scenario player hook
+  const {
+    isPlaying,
+    isPaused,
+    currentTimeMs,
+    nodeStates,
+    animatingEdges,
+    play,
+    pause,
+    reset,
+    toggleNodeState
+  } = useScenarioPlayer(selectedScenario)
+
+  // Load scenarios on mount
+  useEffect(() => {
+    import('@/data/scenarios/sample-playbooks.json').then(data => {
+      setScenarios(data.scenarios)
+    })
+  }, [])
 
   const togglePartition = (id: PartitionId) => {
     setVisiblePartitions((prev) => {
@@ -32,6 +62,27 @@ export default function AWSHierarchyPage() {
           <Navigation />
         </div>
         <div className="flex items-center gap-4">
+          {scenarios.length > 0 && (
+            <>
+              <ScenarioSelector
+                scenarios={scenarios}
+                selectedId={selectedScenarioId}
+                onSelect={setSelectedScenarioId}
+              />
+              {selectedScenario && (
+                <ScenarioPlayerControls
+                  isPlaying={isPlaying}
+                  isPaused={isPaused}
+                  currentTimeMs={currentTimeMs}
+                  durationMs={selectedScenario.durationMs}
+                  onPlay={play}
+                  onPause={pause}
+                  onReset={reset}
+                />
+              )}
+              <div className="w-px h-6 bg-[#e5e5e5]" />
+            </>
+          )}
           <label className="flex items-center gap-2 text-xs cursor-pointer">
             <input
               type="checkbox"
@@ -57,12 +108,16 @@ export default function AWSHierarchyPage() {
         </div>
       </header>
 
-      <main className="h-[calc(100vh-57px)]">
+      <main className="relative h-[calc(100vh-57px)]">
         <HierarchyGraph
           visiblePartitions={visiblePartitions}
           showEdgeLocations={showEdgeLocations}
           showDataCenters={showDataCenters}
+          nodeStates={nodeStates}
+          animatingEdges={animatingEdges}
+          onNodeStateToggle={toggleNodeState}
         />
+        {selectedScenario && <ScenarioInfo scenario={selectedScenario} />}
       </main>
     </div>
   )

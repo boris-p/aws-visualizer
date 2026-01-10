@@ -1,0 +1,3393 @@
+{
+  "id": "aws-global-infrastructure",
+  "name": "AWS Global Infrastructure",
+  "description": "Complete AWS hierarchy showing all partitions, regions, and availability zones",
+  "nodes": [
+    {
+      "id": "aws",
+      "label": "AWS",
+      "type": "root",
+      "position": {
+        "x": 50,
+        "y": 300
+      },
+      "style": {
+        "background": "linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%)",
+        "border": "3px solid #0066cc",
+        "borderRadius": "8px",
+        "padding": "16px 32px",
+        "fontFamily": "monospace",
+        "fontSize": "18px",
+        "fontWeight": "bold",
+        "color": "#0066cc",
+        "boxShadow": "0 4px 12px rgba(0, 102, 204, 0.15)"
+      },
+      "metadata": {
+        "sourcePosition": "right"
+      }
+    },
+    {
+      "id": "partition-aws",
+      "label": "aws",
+      "type": "partition",
+      "position": {
+        "x": 300,
+        "y": 100
+      },
+      "style": {
+        "background": "#f0f7ff",
+        "border": "2px solid #0066cc",
+        "borderRadius": "8px",
+        "padding": "12px 24px",
+        "fontFamily": "monospace",
+        "fontSize": "15px",
+        "color": "#0066cc",
+        "fontWeight": "700",
+        "boxShadow": "0 1px 4px #0066cc20",
+        "minWidth": "140px",
+        "textAlign": "center"
+      },
+      "metadata": {
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "partitionColor": "#0066cc"
+      }
+    },
+    {
+      "id": "region-us-east-1",
+      "label": "us-east-1",
+      "type": "region",
+      "position": {
+        "x": 700,
+        "y": -80
+      },
+      "style": {
+        "background": "#ffffff",
+        "border": "2px solid #e5e5e5",
+        "borderRadius": "6px",
+        "padding": "10px 18px",
+        "fontFamily": "monospace",
+        "fontSize": "13px",
+        "color": "#555",
+        "fontWeight": "600",
+        "boxShadow": "0 1px 4px rgba(0, 0, 0, 0.08)",
+        "minWidth": "120px"
+      },
+      "metadata": {
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "regionName": "US East (N. Virginia)",
+        "lat": 38.13,
+        "lon": -78.45,
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "az-us-east-1-use1-az1",
+      "label": "use1-az1",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": -100
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "us-east-1a"
+        ],
+        "regionId": "us-east-1",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "az-us-east-1-use1-az2",
+      "label": "use1-az2",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": -35
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "us-east-1b"
+        ],
+        "regionId": "us-east-1",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "dc-us-east-1-use1-az1-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": -110
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-east-1-use1-az1",
+        "regionId": "us-east-1",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "dc-us-east-1-use1-az1-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": -80
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-east-1-use1-az1",
+        "regionId": "us-east-1",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "more-dc-us-east-1-use1-az1",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": -65
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "dc-us-east-1-use1-az2-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": -45
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-east-1-use1-az2",
+        "regionId": "us-east-1",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "dc-us-east-1-use1-az2-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": -15
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-east-1-use1-az2",
+        "regionId": "us-east-1",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "more-dc-us-east-1-use1-az2",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 0
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "more-az-us-east-1",
+      "label": "+4",
+      "type": "custom",
+      "position": {
+        "x": 1050,
+        "y": 0
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #bbb",
+        "borderRadius": "4px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "10px",
+        "color": "#999"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true,
+        "remainingCount": 4
+      }
+    },
+    {
+      "id": "region-us-east-2",
+      "label": "us-east-2",
+      "type": "region",
+      "position": {
+        "x": 700,
+        "y": 70
+      },
+      "style": {
+        "background": "#ffffff",
+        "border": "2px solid #e5e5e5",
+        "borderRadius": "6px",
+        "padding": "10px 18px",
+        "fontFamily": "monospace",
+        "fontSize": "13px",
+        "color": "#555",
+        "fontWeight": "600",
+        "boxShadow": "0 1px 4px rgba(0, 0, 0, 0.08)",
+        "minWidth": "120px"
+      },
+      "metadata": {
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "regionName": "US East (Ohio)",
+        "lat": 40.42,
+        "lon": -83,
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "az-us-east-2-use2-az1",
+      "label": "use2-az1",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 50
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "us-east-2a"
+        ],
+        "regionId": "us-east-2",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "az-us-east-2-use2-az2",
+      "label": "use2-az2",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 115
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "us-east-2b"
+        ],
+        "regionId": "us-east-2",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "dc-us-east-2-use2-az1-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 40
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-east-2-use2-az1",
+        "regionId": "us-east-2",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "dc-us-east-2-use2-az1-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 70
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-east-2-use2-az1",
+        "regionId": "us-east-2",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "more-dc-us-east-2-use2-az1",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 85
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "dc-us-east-2-use2-az2-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 105
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-east-2-use2-az2",
+        "regionId": "us-east-2",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "dc-us-east-2-use2-az2-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 135
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-east-2-use2-az2",
+        "regionId": "us-east-2",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "more-dc-us-east-2-use2-az2",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 150
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "more-az-us-east-2",
+      "label": "+1",
+      "type": "custom",
+      "position": {
+        "x": 1050,
+        "y": 150
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #bbb",
+        "borderRadius": "4px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "10px",
+        "color": "#999"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true,
+        "remainingCount": 1
+      }
+    },
+    {
+      "id": "region-us-west-1",
+      "label": "us-west-1",
+      "type": "region",
+      "position": {
+        "x": 700,
+        "y": 220
+      },
+      "style": {
+        "background": "#ffffff",
+        "border": "2px solid #e5e5e5",
+        "borderRadius": "6px",
+        "padding": "10px 18px",
+        "fontFamily": "monospace",
+        "fontSize": "13px",
+        "color": "#555",
+        "fontWeight": "600",
+        "boxShadow": "0 1px 4px rgba(0, 0, 0, 0.08)",
+        "minWidth": "120px"
+      },
+      "metadata": {
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "regionName": "US West (N. California)",
+        "lat": 37.35,
+        "lon": -121.96,
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "az-us-west-1-usw1-az1",
+      "label": "usw1-az1",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 200
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "us-west-1a"
+        ],
+        "regionId": "us-west-1",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "az-us-west-1-usw1-az3",
+      "label": "usw1-az3",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 265
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "us-west-1c"
+        ],
+        "regionId": "us-west-1",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "dc-us-west-1-usw1-az1-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 190
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-west-1-usw1-az1",
+        "regionId": "us-west-1",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "dc-us-west-1-usw1-az1-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 220
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-west-1-usw1-az1",
+        "regionId": "us-west-1",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "more-dc-us-west-1-usw1-az1",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 235
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "dc-us-west-1-usw1-az3-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 255
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-west-1-usw1-az3",
+        "regionId": "us-west-1",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "dc-us-west-1-usw1-az3-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 285
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-west-1-usw1-az3",
+        "regionId": "us-west-1",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "more-dc-us-west-1-usw1-az3",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 300
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "region-us-west-2",
+      "label": "us-west-2",
+      "type": "region",
+      "position": {
+        "x": 700,
+        "y": 370
+      },
+      "style": {
+        "background": "#ffffff",
+        "border": "2px solid #e5e5e5",
+        "borderRadius": "6px",
+        "padding": "10px 18px",
+        "fontFamily": "monospace",
+        "fontSize": "13px",
+        "color": "#555",
+        "fontWeight": "600",
+        "boxShadow": "0 1px 4px rgba(0, 0, 0, 0.08)",
+        "minWidth": "120px"
+      },
+      "metadata": {
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "regionName": "US West (Oregon)",
+        "lat": 45.84,
+        "lon": -119.7,
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "az-us-west-2-usw2-az1",
+      "label": "usw2-az1",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 350
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "us-west-2a"
+        ],
+        "regionId": "us-west-2",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "az-us-west-2-usw2-az2",
+      "label": "usw2-az2",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 415
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "us-west-2b"
+        ],
+        "regionId": "us-west-2",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "dc-us-west-2-usw2-az1-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 340
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-west-2-usw2-az1",
+        "regionId": "us-west-2",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "dc-us-west-2-usw2-az1-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 370
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-west-2-usw2-az1",
+        "regionId": "us-west-2",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "more-dc-us-west-2-usw2-az1",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 385
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "dc-us-west-2-usw2-az2-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 405
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-west-2-usw2-az2",
+        "regionId": "us-west-2",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "dc-us-west-2-usw2-az2-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 435
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-west-2-usw2-az2",
+        "regionId": "us-west-2",
+        "partitionId": "aws"
+      }
+    },
+    {
+      "id": "more-dc-us-west-2-usw2-az2",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 450
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "more-az-us-west-2",
+      "label": "+2",
+      "type": "custom",
+      "position": {
+        "x": 1050,
+        "y": 450
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #bbb",
+        "borderRadius": "4px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "10px",
+        "color": "#999"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true,
+        "remainingCount": 2
+      }
+    },
+    {
+      "id": "more-aws",
+      "label": "+26 regions",
+      "type": "custom",
+      "position": {
+        "x": 700,
+        "y": 360
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1.5px dashed #ccc",
+        "borderRadius": "6px",
+        "padding": "8px 16px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#999"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true,
+        "remainingCount": 26
+      }
+    },
+    {
+      "id": "partition-aws-cn",
+      "label": "aws-cn",
+      "type": "partition-cn",
+      "position": {
+        "x": 300,
+        "y": 450
+      },
+      "style": {
+        "background": "#fff5f5",
+        "border": "2px solid #dc2626",
+        "borderRadius": "8px",
+        "padding": "12px 24px",
+        "fontFamily": "monospace",
+        "fontSize": "15px",
+        "color": "#dc2626",
+        "fontWeight": "700",
+        "boxShadow": "0 1px 4px #dc262620",
+        "minWidth": "140px",
+        "textAlign": "center"
+      },
+      "metadata": {
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "partitionColor": "#dc2626"
+      }
+    },
+    {
+      "id": "region-cn-north-1",
+      "label": "cn-north-1",
+      "type": "region",
+      "position": {
+        "x": 700,
+        "y": 270
+      },
+      "style": {
+        "background": "#ffffff",
+        "border": "2px solid #e5e5e5",
+        "borderRadius": "6px",
+        "padding": "10px 18px",
+        "fontFamily": "monospace",
+        "fontSize": "13px",
+        "color": "#555",
+        "fontWeight": "600",
+        "boxShadow": "0 1px 4px rgba(0, 0, 0, 0.08)",
+        "minWidth": "120px"
+      },
+      "metadata": {
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "regionName": "China (Beijing)",
+        "lat": 39.9,
+        "lon": 116.4,
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "az-cn-north-1-cnn1-az1",
+      "label": "cnn1-az1",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 250
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "cn-north-1a"
+        ],
+        "regionId": "cn-north-1",
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "az-cn-north-1-cnn1-az2",
+      "label": "cnn1-az2",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 315
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "cn-north-1b"
+        ],
+        "regionId": "cn-north-1",
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "dc-cn-north-1-cnn1-az1-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 240
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-cn-north-1-cnn1-az1",
+        "regionId": "cn-north-1",
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "dc-cn-north-1-cnn1-az1-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 270
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-cn-north-1-cnn1-az1",
+        "regionId": "cn-north-1",
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "more-dc-cn-north-1-cnn1-az1",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 285
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "dc-cn-north-1-cnn1-az2-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 305
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-cn-north-1-cnn1-az2",
+        "regionId": "cn-north-1",
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "dc-cn-north-1-cnn1-az2-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 335
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-cn-north-1-cnn1-az2",
+        "regionId": "cn-north-1",
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "more-dc-cn-north-1-cnn1-az2",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 350
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "more-az-cn-north-1",
+      "label": "+1",
+      "type": "custom",
+      "position": {
+        "x": 1050,
+        "y": 350
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #bbb",
+        "borderRadius": "4px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "10px",
+        "color": "#999"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true,
+        "remainingCount": 1
+      }
+    },
+    {
+      "id": "region-cn-northwest-1",
+      "label": "cn-northwest-1",
+      "type": "region",
+      "position": {
+        "x": 700,
+        "y": 420
+      },
+      "style": {
+        "background": "#ffffff",
+        "border": "2px solid #e5e5e5",
+        "borderRadius": "6px",
+        "padding": "10px 18px",
+        "fontFamily": "monospace",
+        "fontSize": "13px",
+        "color": "#555",
+        "fontWeight": "600",
+        "boxShadow": "0 1px 4px rgba(0, 0, 0, 0.08)",
+        "minWidth": "120px"
+      },
+      "metadata": {
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "regionName": "China (Ningxia)",
+        "lat": 37.5,
+        "lon": 106.27,
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "az-cn-northwest-1-cnnw1-az1",
+      "label": "cnnw1-az1",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 400
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "cn-northwest-1a"
+        ],
+        "regionId": "cn-northwest-1",
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "az-cn-northwest-1-cnnw1-az2",
+      "label": "cnnw1-az2",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 465
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "cn-northwest-1b"
+        ],
+        "regionId": "cn-northwest-1",
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "dc-cn-northwest-1-cnnw1-az1-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 390
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-cn-northwest-1-cnnw1-az1",
+        "regionId": "cn-northwest-1",
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "dc-cn-northwest-1-cnnw1-az1-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 420
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-cn-northwest-1-cnnw1-az1",
+        "regionId": "cn-northwest-1",
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "more-dc-cn-northwest-1-cnnw1-az1",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 435
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "dc-cn-northwest-1-cnnw1-az2-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 455
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-cn-northwest-1-cnnw1-az2",
+        "regionId": "cn-northwest-1",
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "dc-cn-northwest-1-cnnw1-az2-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 485
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-cn-northwest-1-cnnw1-az2",
+        "regionId": "cn-northwest-1",
+        "partitionId": "aws-cn"
+      }
+    },
+    {
+      "id": "more-dc-cn-northwest-1-cnnw1-az2",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 500
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "more-az-cn-northwest-1",
+      "label": "+1",
+      "type": "custom",
+      "position": {
+        "x": 1050,
+        "y": 500
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #bbb",
+        "borderRadius": "4px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "10px",
+        "color": "#999"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true,
+        "remainingCount": 1
+      }
+    },
+    {
+      "id": "partition-aws-us-gov",
+      "label": "aws-us-gov",
+      "type": "partition-gov",
+      "position": {
+        "x": 300,
+        "y": 800
+      },
+      "style": {
+        "background": "#fff7ed",
+        "border": "2px solid #ea580c",
+        "borderRadius": "8px",
+        "padding": "12px 24px",
+        "fontFamily": "monospace",
+        "fontSize": "15px",
+        "color": "#ea580c",
+        "fontWeight": "700",
+        "boxShadow": "0 1px 4px #ea580c20",
+        "minWidth": "140px",
+        "textAlign": "center"
+      },
+      "metadata": {
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "partitionColor": "#ea580c"
+      }
+    },
+    {
+      "id": "region-us-gov-west-1",
+      "label": "us-gov-west-1",
+      "type": "region",
+      "position": {
+        "x": 700,
+        "y": 620
+      },
+      "style": {
+        "background": "#ffffff",
+        "border": "2px solid #e5e5e5",
+        "borderRadius": "6px",
+        "padding": "10px 18px",
+        "fontFamily": "monospace",
+        "fontSize": "13px",
+        "color": "#555",
+        "fontWeight": "600",
+        "boxShadow": "0 1px 4px rgba(0, 0, 0, 0.08)",
+        "minWidth": "120px"
+      },
+      "metadata": {
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "regionName": "GovCloud (US-West)",
+        "lat": 45.84,
+        "lon": -122.7,
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "az-us-gov-west-1-usgw1-az1",
+      "label": "usgw1-az1",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 600
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "us-gov-west-1a"
+        ],
+        "regionId": "us-gov-west-1",
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "az-us-gov-west-1-usgw1-az2",
+      "label": "usgw1-az2",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 665
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "us-gov-west-1b"
+        ],
+        "regionId": "us-gov-west-1",
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "dc-us-gov-west-1-usgw1-az1-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 590
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-gov-west-1-usgw1-az1",
+        "regionId": "us-gov-west-1",
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "dc-us-gov-west-1-usgw1-az1-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 620
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-gov-west-1-usgw1-az1",
+        "regionId": "us-gov-west-1",
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "more-dc-us-gov-west-1-usgw1-az1",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 635
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "dc-us-gov-west-1-usgw1-az2-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 655
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-gov-west-1-usgw1-az2",
+        "regionId": "us-gov-west-1",
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "dc-us-gov-west-1-usgw1-az2-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 685
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-gov-west-1-usgw1-az2",
+        "regionId": "us-gov-west-1",
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "more-dc-us-gov-west-1-usgw1-az2",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 700
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "more-az-us-gov-west-1",
+      "label": "+1",
+      "type": "custom",
+      "position": {
+        "x": 1050,
+        "y": 700
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #bbb",
+        "borderRadius": "4px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "10px",
+        "color": "#999"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true,
+        "remainingCount": 1
+      }
+    },
+    {
+      "id": "region-us-gov-east-1",
+      "label": "us-gov-east-1",
+      "type": "region",
+      "position": {
+        "x": 700,
+        "y": 770
+      },
+      "style": {
+        "background": "#ffffff",
+        "border": "2px solid #e5e5e5",
+        "borderRadius": "6px",
+        "padding": "10px 18px",
+        "fontFamily": "monospace",
+        "fontSize": "13px",
+        "color": "#555",
+        "fontWeight": "600",
+        "boxShadow": "0 1px 4px rgba(0, 0, 0, 0.08)",
+        "minWidth": "120px"
+      },
+      "metadata": {
+        "sourcePosition": "right",
+        "targetPosition": "left",
+        "regionName": "GovCloud (US-East)",
+        "lat": 38.13,
+        "lon": -81.45,
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "az-us-gov-east-1-usge1-az1",
+      "label": "usge1-az1",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 750
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "us-gov-east-1a"
+        ],
+        "regionId": "us-gov-east-1",
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "az-us-gov-east-1-usge1-az2",
+      "label": "usge1-az2",
+      "type": "az",
+      "position": {
+        "x": 1050,
+        "y": 815
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#888",
+        "minWidth": "90px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azLetters": [
+          "us-gov-east-1b"
+        ],
+        "regionId": "us-gov-east-1",
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "dc-us-gov-east-1-usge1-az1-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 740
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-gov-east-1-usge1-az1",
+        "regionId": "us-gov-east-1",
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "dc-us-gov-east-1-usge1-az1-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 770
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-gov-east-1-usge1-az1",
+        "regionId": "us-gov-east-1",
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "more-dc-us-gov-east-1-usge1-az1",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 785
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "dc-us-gov-east-1-usge1-az2-0",
+      "label": "DC-1",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 805
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-gov-east-1-usge1-az2",
+        "regionId": "us-gov-east-1",
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "dc-us-gov-east-1-usge1-az2-1",
+      "label": "DC-2",
+      "type": "dc",
+      "position": {
+        "x": 1350,
+        "y": 835
+      },
+      "isInteractive": true,
+      "style": {
+        "background": "#f5f5f5",
+        "border": "1px solid #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "9px",
+        "color": "#999",
+        "minWidth": "60px",
+        "cursor": "pointer"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "azId": "az-us-gov-east-1-usge1-az2",
+        "regionId": "us-gov-east-1",
+        "partitionId": "aws-us-gov"
+      }
+    },
+    {
+      "id": "more-dc-us-gov-east-1-usge1-az2",
+      "label": "+N DCs",
+      "type": "custom",
+      "position": {
+        "x": 1350,
+        "y": 850
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #e0e0e0",
+        "borderRadius": "3px",
+        "padding": "3px 8px",
+        "fontFamily": "monospace",
+        "fontSize": "8px",
+        "color": "#bbb"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true
+      }
+    },
+    {
+      "id": "more-az-us-gov-east-1",
+      "label": "+1",
+      "type": "custom",
+      "position": {
+        "x": 1050,
+        "y": 850
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1px dashed #bbb",
+        "borderRadius": "4px",
+        "padding": "4px 10px",
+        "fontFamily": "monospace",
+        "fontSize": "10px",
+        "color": "#999"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true,
+        "remainingCount": 1
+      }
+    },
+    {
+      "id": "edge-locations",
+      "label": "Edge Locations",
+      "type": "edge",
+      "position": {
+        "x": 300,
+        "y": 1150
+      },
+      "style": {
+        "background": "#f0fdf4",
+        "border": "2px solid #16a34a",
+        "borderRadius": "8px",
+        "padding": "12px 24px",
+        "fontFamily": "monospace",
+        "fontSize": "15px",
+        "color": "#16a34a",
+        "fontWeight": "700",
+        "boxShadow": "0 1px 4px rgba(22, 163, 74, 0.2)",
+        "minWidth": "140px",
+        "textAlign": "center"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "sourcePosition": "right"
+      }
+    },
+    {
+      "id": "edge-nyc",
+      "label": "New York (8)",
+      "type": "edge",
+      "position": {
+        "x": 700,
+        "y": 1030
+      },
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #86efac",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#16a34a",
+        "minWidth": "120px"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "city": "New York",
+        "edgeLocationCount": 8
+      }
+    },
+    {
+      "id": "edge-lon",
+      "label": "London (12)",
+      "type": "edge",
+      "position": {
+        "x": 700,
+        "y": 1095
+      },
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #86efac",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#16a34a",
+        "minWidth": "120px"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "city": "London",
+        "edgeLocationCount": 12
+      }
+    },
+    {
+      "id": "edge-tok",
+      "label": "Tokyo (18)",
+      "type": "edge",
+      "position": {
+        "x": 700,
+        "y": 1160
+      },
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #86efac",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#16a34a",
+        "minWidth": "120px"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "city": "Tokyo",
+        "edgeLocationCount": 18
+      }
+    },
+    {
+      "id": "edge-syd",
+      "label": "Sydney (5)",
+      "type": "edge",
+      "position": {
+        "x": 700,
+        "y": 1225
+      },
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #86efac",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#16a34a",
+        "minWidth": "120px"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "city": "Sydney",
+        "edgeLocationCount": 5
+      }
+    },
+    {
+      "id": "edge-sfo",
+      "label": "San Francisco (7)",
+      "type": "edge",
+      "position": {
+        "x": 700,
+        "y": 1290
+      },
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #86efac",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#16a34a",
+        "minWidth": "120px"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "city": "San Francisco",
+        "edgeLocationCount": 7
+      }
+    },
+    {
+      "id": "more-edge-locations",
+      "label": "+450 locations",
+      "type": "custom",
+      "position": {
+        "x": 700,
+        "y": 1360
+      },
+      "style": {
+        "background": "transparent",
+        "border": "1.5px dashed #86efac",
+        "borderRadius": "6px",
+        "padding": "8px 16px",
+        "fontFamily": "monospace",
+        "fontSize": "11px",
+        "color": "#16a34a"
+      },
+      "metadata": {
+        "targetPosition": "left",
+        "isPlaceholder": true,
+        "remainingCount": 450
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "aws-partition-aws",
+      "source": "aws",
+      "target": "partition-aws",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 2,
+        "opacity": 0.3
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "partition-aws-region-us-east-1",
+      "source": "partition-aws",
+      "target": "region-us-east-1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.25
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-east-1-az-us-east-1-use1-az1",
+      "source": "region-us-east-1",
+      "target": "az-us-east-1-use1-az1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-east-1-az-us-east-1-use1-az2",
+      "source": "region-us-east-1",
+      "target": "az-us-east-1-use1-az2",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-east-1-use1-az1-dc-us-east-1-use1-az1-0",
+      "source": "az-us-east-1-use1-az1",
+      "target": "dc-us-east-1-use1-az1-0",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-east-1-use1-az1-dc-us-east-1-use1-az1-1",
+      "source": "az-us-east-1-use1-az1",
+      "target": "dc-us-east-1-use1-az1-1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-east-1-use1-az1-more-dc-us-east-1-use1-az1",
+      "source": "az-us-east-1-use1-az1",
+      "target": "more-dc-us-east-1-use1-az1",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-east-1-use1-az2-dc-us-east-1-use1-az2-0",
+      "source": "az-us-east-1-use1-az2",
+      "target": "dc-us-east-1-use1-az2-0",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-east-1-use1-az2-dc-us-east-1-use1-az2-1",
+      "source": "az-us-east-1-use1-az2",
+      "target": "dc-us-east-1-use1-az2-1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-east-1-use1-az2-more-dc-us-east-1-use1-az2",
+      "source": "az-us-east-1-use1-az2",
+      "target": "more-dc-us-east-1-use1-az2",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-east-1-more-az-us-east-1",
+      "source": "region-us-east-1",
+      "target": "more-az-us-east-1",
+      "style": {
+        "stroke": "#ddd",
+        "strokeWidth": 1,
+        "strokeDasharray": "4,4",
+        "opacity": 0.3
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "partition-aws-region-us-east-2",
+      "source": "partition-aws",
+      "target": "region-us-east-2",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.25
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-east-2-az-us-east-2-use2-az1",
+      "source": "region-us-east-2",
+      "target": "az-us-east-2-use2-az1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-east-2-az-us-east-2-use2-az2",
+      "source": "region-us-east-2",
+      "target": "az-us-east-2-use2-az2",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-east-2-use2-az1-dc-us-east-2-use2-az1-0",
+      "source": "az-us-east-2-use2-az1",
+      "target": "dc-us-east-2-use2-az1-0",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-east-2-use2-az1-dc-us-east-2-use2-az1-1",
+      "source": "az-us-east-2-use2-az1",
+      "target": "dc-us-east-2-use2-az1-1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-east-2-use2-az1-more-dc-us-east-2-use2-az1",
+      "source": "az-us-east-2-use2-az1",
+      "target": "more-dc-us-east-2-use2-az1",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-east-2-use2-az2-dc-us-east-2-use2-az2-0",
+      "source": "az-us-east-2-use2-az2",
+      "target": "dc-us-east-2-use2-az2-0",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-east-2-use2-az2-dc-us-east-2-use2-az2-1",
+      "source": "az-us-east-2-use2-az2",
+      "target": "dc-us-east-2-use2-az2-1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-east-2-use2-az2-more-dc-us-east-2-use2-az2",
+      "source": "az-us-east-2-use2-az2",
+      "target": "more-dc-us-east-2-use2-az2",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-east-2-more-az-us-east-2",
+      "source": "region-us-east-2",
+      "target": "more-az-us-east-2",
+      "style": {
+        "stroke": "#ddd",
+        "strokeWidth": 1,
+        "strokeDasharray": "4,4",
+        "opacity": 0.3
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "partition-aws-region-us-west-1",
+      "source": "partition-aws",
+      "target": "region-us-west-1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.25
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-west-1-az-us-west-1-usw1-az1",
+      "source": "region-us-west-1",
+      "target": "az-us-west-1-usw1-az1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-west-1-az-us-west-1-usw1-az3",
+      "source": "region-us-west-1",
+      "target": "az-us-west-1-usw1-az3",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-west-1-usw1-az1-dc-us-west-1-usw1-az1-0",
+      "source": "az-us-west-1-usw1-az1",
+      "target": "dc-us-west-1-usw1-az1-0",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-west-1-usw1-az1-dc-us-west-1-usw1-az1-1",
+      "source": "az-us-west-1-usw1-az1",
+      "target": "dc-us-west-1-usw1-az1-1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-west-1-usw1-az1-more-dc-us-west-1-usw1-az1",
+      "source": "az-us-west-1-usw1-az1",
+      "target": "more-dc-us-west-1-usw1-az1",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-west-1-usw1-az3-dc-us-west-1-usw1-az3-0",
+      "source": "az-us-west-1-usw1-az3",
+      "target": "dc-us-west-1-usw1-az3-0",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-west-1-usw1-az3-dc-us-west-1-usw1-az3-1",
+      "source": "az-us-west-1-usw1-az3",
+      "target": "dc-us-west-1-usw1-az3-1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-west-1-usw1-az3-more-dc-us-west-1-usw1-az3",
+      "source": "az-us-west-1-usw1-az3",
+      "target": "more-dc-us-west-1-usw1-az3",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "partition-aws-region-us-west-2",
+      "source": "partition-aws",
+      "target": "region-us-west-2",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.25
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-west-2-az-us-west-2-usw2-az1",
+      "source": "region-us-west-2",
+      "target": "az-us-west-2-usw2-az1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-west-2-az-us-west-2-usw2-az2",
+      "source": "region-us-west-2",
+      "target": "az-us-west-2-usw2-az2",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-west-2-usw2-az1-dc-us-west-2-usw2-az1-0",
+      "source": "az-us-west-2-usw2-az1",
+      "target": "dc-us-west-2-usw2-az1-0",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-west-2-usw2-az1-dc-us-west-2-usw2-az1-1",
+      "source": "az-us-west-2-usw2-az1",
+      "target": "dc-us-west-2-usw2-az1-1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-west-2-usw2-az1-more-dc-us-west-2-usw2-az1",
+      "source": "az-us-west-2-usw2-az1",
+      "target": "more-dc-us-west-2-usw2-az1",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-west-2-usw2-az2-dc-us-west-2-usw2-az2-0",
+      "source": "az-us-west-2-usw2-az2",
+      "target": "dc-us-west-2-usw2-az2-0",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-west-2-usw2-az2-dc-us-west-2-usw2-az2-1",
+      "source": "az-us-west-2-usw2-az2",
+      "target": "dc-us-west-2-usw2-az2-1",
+      "style": {
+        "stroke": "#0066cc",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-west-2-usw2-az2-more-dc-us-west-2-usw2-az2",
+      "source": "az-us-west-2-usw2-az2",
+      "target": "more-dc-us-west-2-usw2-az2",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-west-2-more-az-us-west-2",
+      "source": "region-us-west-2",
+      "target": "more-az-us-west-2",
+      "style": {
+        "stroke": "#ddd",
+        "strokeWidth": 1,
+        "strokeDasharray": "4,4",
+        "opacity": 0.3
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "partition-aws-more-aws",
+      "source": "partition-aws",
+      "target": "more-aws",
+      "style": {
+        "stroke": "#ddd",
+        "strokeWidth": 1.5,
+        "strokeDasharray": "5,5",
+        "opacity": 0.3
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "aws-partition-aws-cn",
+      "source": "aws",
+      "target": "partition-aws-cn",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 2,
+        "opacity": 0.3
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "partition-aws-cn-region-cn-north-1",
+      "source": "partition-aws-cn",
+      "target": "region-cn-north-1",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.5,
+        "opacity": 0.25
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-cn-north-1-az-cn-north-1-cnn1-az1",
+      "source": "region-cn-north-1",
+      "target": "az-cn-north-1-cnn1-az1",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-cn-north-1-az-cn-north-1-cnn1-az2",
+      "source": "region-cn-north-1",
+      "target": "az-cn-north-1-cnn1-az2",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-cn-north-1-cnn1-az1-dc-cn-north-1-cnn1-az1-0",
+      "source": "az-cn-north-1-cnn1-az1",
+      "target": "dc-cn-north-1-cnn1-az1-0",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-cn-north-1-cnn1-az1-dc-cn-north-1-cnn1-az1-1",
+      "source": "az-cn-north-1-cnn1-az1",
+      "target": "dc-cn-north-1-cnn1-az1-1",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-cn-north-1-cnn1-az1-more-dc-cn-north-1-cnn1-az1",
+      "source": "az-cn-north-1-cnn1-az1",
+      "target": "more-dc-cn-north-1-cnn1-az1",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-cn-north-1-cnn1-az2-dc-cn-north-1-cnn1-az2-0",
+      "source": "az-cn-north-1-cnn1-az2",
+      "target": "dc-cn-north-1-cnn1-az2-0",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-cn-north-1-cnn1-az2-dc-cn-north-1-cnn1-az2-1",
+      "source": "az-cn-north-1-cnn1-az2",
+      "target": "dc-cn-north-1-cnn1-az2-1",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-cn-north-1-cnn1-az2-more-dc-cn-north-1-cnn1-az2",
+      "source": "az-cn-north-1-cnn1-az2",
+      "target": "more-dc-cn-north-1-cnn1-az2",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-cn-north-1-more-az-cn-north-1",
+      "source": "region-cn-north-1",
+      "target": "more-az-cn-north-1",
+      "style": {
+        "stroke": "#ddd",
+        "strokeWidth": 1,
+        "strokeDasharray": "4,4",
+        "opacity": 0.3
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "partition-aws-cn-region-cn-northwest-1",
+      "source": "partition-aws-cn",
+      "target": "region-cn-northwest-1",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.5,
+        "opacity": 0.25
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-cn-northwest-1-az-cn-northwest-1-cnnw1-az1",
+      "source": "region-cn-northwest-1",
+      "target": "az-cn-northwest-1-cnnw1-az1",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-cn-northwest-1-az-cn-northwest-1-cnnw1-az2",
+      "source": "region-cn-northwest-1",
+      "target": "az-cn-northwest-1-cnnw1-az2",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-cn-northwest-1-cnnw1-az1-dc-cn-northwest-1-cnnw1-az1-0",
+      "source": "az-cn-northwest-1-cnnw1-az1",
+      "target": "dc-cn-northwest-1-cnnw1-az1-0",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-cn-northwest-1-cnnw1-az1-dc-cn-northwest-1-cnnw1-az1-1",
+      "source": "az-cn-northwest-1-cnnw1-az1",
+      "target": "dc-cn-northwest-1-cnnw1-az1-1",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-cn-northwest-1-cnnw1-az1-more-dc-cn-northwest-1-cnnw1-az1",
+      "source": "az-cn-northwest-1-cnnw1-az1",
+      "target": "more-dc-cn-northwest-1-cnnw1-az1",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-cn-northwest-1-cnnw1-az2-dc-cn-northwest-1-cnnw1-az2-0",
+      "source": "az-cn-northwest-1-cnnw1-az2",
+      "target": "dc-cn-northwest-1-cnnw1-az2-0",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-cn-northwest-1-cnnw1-az2-dc-cn-northwest-1-cnnw1-az2-1",
+      "source": "az-cn-northwest-1-cnnw1-az2",
+      "target": "dc-cn-northwest-1-cnnw1-az2-1",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-cn-northwest-1-cnnw1-az2-more-dc-cn-northwest-1-cnnw1-az2",
+      "source": "az-cn-northwest-1-cnnw1-az2",
+      "target": "more-dc-cn-northwest-1-cnnw1-az2",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-cn-northwest-1-more-az-cn-northwest-1",
+      "source": "region-cn-northwest-1",
+      "target": "more-az-cn-northwest-1",
+      "style": {
+        "stroke": "#ddd",
+        "strokeWidth": 1,
+        "strokeDasharray": "4,4",
+        "opacity": 0.3
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "aws-partition-aws-us-gov",
+      "source": "aws",
+      "target": "partition-aws-us-gov",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 2,
+        "opacity": 0.3
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "partition-aws-us-gov-region-us-gov-west-1",
+      "source": "partition-aws-us-gov",
+      "target": "region-us-gov-west-1",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1.5,
+        "opacity": 0.25
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-gov-west-1-az-us-gov-west-1-usgw1-az1",
+      "source": "region-us-gov-west-1",
+      "target": "az-us-gov-west-1-usgw1-az1",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-gov-west-1-az-us-gov-west-1-usgw1-az2",
+      "source": "region-us-gov-west-1",
+      "target": "az-us-gov-west-1-usgw1-az2",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-gov-west-1-usgw1-az1-dc-us-gov-west-1-usgw1-az1-0",
+      "source": "az-us-gov-west-1-usgw1-az1",
+      "target": "dc-us-gov-west-1-usgw1-az1-0",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-gov-west-1-usgw1-az1-dc-us-gov-west-1-usgw1-az1-1",
+      "source": "az-us-gov-west-1-usgw1-az1",
+      "target": "dc-us-gov-west-1-usgw1-az1-1",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-gov-west-1-usgw1-az1-more-dc-us-gov-west-1-usgw1-az1",
+      "source": "az-us-gov-west-1-usgw1-az1",
+      "target": "more-dc-us-gov-west-1-usgw1-az1",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-gov-west-1-usgw1-az2-dc-us-gov-west-1-usgw1-az2-0",
+      "source": "az-us-gov-west-1-usgw1-az2",
+      "target": "dc-us-gov-west-1-usgw1-az2-0",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-gov-west-1-usgw1-az2-dc-us-gov-west-1-usgw1-az2-1",
+      "source": "az-us-gov-west-1-usgw1-az2",
+      "target": "dc-us-gov-west-1-usgw1-az2-1",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-gov-west-1-usgw1-az2-more-dc-us-gov-west-1-usgw1-az2",
+      "source": "az-us-gov-west-1-usgw1-az2",
+      "target": "more-dc-us-gov-west-1-usgw1-az2",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-gov-west-1-more-az-us-gov-west-1",
+      "source": "region-us-gov-west-1",
+      "target": "more-az-us-gov-west-1",
+      "style": {
+        "stroke": "#ddd",
+        "strokeWidth": 1,
+        "strokeDasharray": "4,4",
+        "opacity": 0.3
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "partition-aws-us-gov-region-us-gov-east-1",
+      "source": "partition-aws-us-gov",
+      "target": "region-us-gov-east-1",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1.5,
+        "opacity": 0.25
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-gov-east-1-az-us-gov-east-1-usge1-az1",
+      "source": "region-us-gov-east-1",
+      "target": "az-us-gov-east-1-usge1-az1",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-gov-east-1-az-us-gov-east-1-usge1-az2",
+      "source": "region-us-gov-east-1",
+      "target": "az-us-gov-east-1-usge1-az2",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-gov-east-1-usge1-az1-dc-us-gov-east-1-usge1-az1-0",
+      "source": "az-us-gov-east-1-usge1-az1",
+      "target": "dc-us-gov-east-1-usge1-az1-0",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-gov-east-1-usge1-az1-dc-us-gov-east-1-usge1-az1-1",
+      "source": "az-us-gov-east-1-usge1-az1",
+      "target": "dc-us-gov-east-1-usge1-az1-1",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-gov-east-1-usge1-az1-more-dc-us-gov-east-1-usge1-az1",
+      "source": "az-us-gov-east-1-usge1-az1",
+      "target": "more-dc-us-gov-east-1-usge1-az1",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-gov-east-1-usge1-az2-dc-us-gov-east-1-usge1-az2-0",
+      "source": "az-us-gov-east-1-usge1-az2",
+      "target": "dc-us-gov-east-1-usge1-az2-0",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-gov-east-1-usge1-az2-dc-us-gov-east-1-usge1-az2-1",
+      "source": "az-us-gov-east-1-usge1-az2",
+      "target": "dc-us-gov-east-1-usge1-az2-1",
+      "style": {
+        "stroke": "#ea580c",
+        "strokeWidth": 1,
+        "opacity": 0.15
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "az-us-gov-east-1-usge1-az2-more-dc-us-gov-east-1-usge1-az2",
+      "source": "az-us-gov-east-1-usge1-az2",
+      "target": "more-dc-us-gov-east-1-usge1-az2",
+      "style": {
+        "stroke": "#e0e0e0",
+        "strokeWidth": 1,
+        "strokeDasharray": "3,3",
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "region-us-gov-east-1-more-az-us-gov-east-1",
+      "source": "region-us-gov-east-1",
+      "target": "more-az-us-gov-east-1",
+      "style": {
+        "stroke": "#ddd",
+        "strokeWidth": 1,
+        "strokeDasharray": "4,4",
+        "opacity": 0.3
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "aws-edge-locations",
+      "source": "aws",
+      "target": "edge-locations",
+      "style": {
+        "stroke": "#16a34a",
+        "strokeWidth": 2,
+        "opacity": 0.3
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "edge-locations-edge-nyc",
+      "source": "edge-locations",
+      "target": "edge-nyc",
+      "style": {
+        "stroke": "#16a34a",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "edge-locations-edge-lon",
+      "source": "edge-locations",
+      "target": "edge-lon",
+      "style": {
+        "stroke": "#16a34a",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "edge-locations-edge-tok",
+      "source": "edge-locations",
+      "target": "edge-tok",
+      "style": {
+        "stroke": "#16a34a",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "edge-locations-edge-syd",
+      "source": "edge-locations",
+      "target": "edge-syd",
+      "style": {
+        "stroke": "#16a34a",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "edge-locations-edge-sfo",
+      "source": "edge-locations",
+      "target": "edge-sfo",
+      "style": {
+        "stroke": "#16a34a",
+        "strokeWidth": 1.5,
+        "opacity": 0.2
+      },
+      "type": "smoothstep"
+    },
+    {
+      "id": "edge-locations-more",
+      "source": "edge-locations",
+      "target": "more-edge-locations",
+      "style": {
+        "stroke": "#86efac",
+        "strokeWidth": 1.5,
+        "strokeDasharray": "5,5",
+        "opacity": 0.3
+      },
+      "type": "smoothstep"
+    }
+  ]
+}

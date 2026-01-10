@@ -1,0 +1,12 @@
+{
+  "graphs": [
+    {
+      "id": "aws-global-infrastructure",
+      "file": "./aws-global-infrastructure.json"
+    },
+    {
+      "id": "ec2-scenario-playground",
+      "file": "./ec2-scenario-playground.json"
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "infrastructures": [
+    {
+      "id": "simple-single-az",
+      "name": "Simple Single-AZ Deployment",
+      "description": "Single EC2 instance in one AZ - no redundancy",
+      "hasRedundancy": false,
+      "services": [
+        {
+          "id": "web-service-1",
+          "name": "Web Server",
+          "type": "web-server",
+          "regionId": "us-east-1",
+          "azId": "use1-az1",
+          "loadBalanced": false,
+          "instances": [
+            {
+              "id": "instance-i-001",
+              "name": "web-server-001",
+              "regionId": "us-east-1",
+              "azId": "use1-az1",
+              "instanceType": "t3.medium",
+              "state": "running",
+              "health": "healthy"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "multi-az-redundant",
+      "name": "Multi-AZ Redundant Deployment",
+      "description": "Load-balanced EC2 instances across 2 AZs",
+      "hasRedundancy": true,
+      "services": [
+        {
+          "id": "web-service-ha",
+          "name": "HA Web Service",
+          "type": "web-server",
+          "regionId": "us-east-1",
+          "azId": "multi",
+          "loadBalanced": true,
+          "instances": [
+            {
+              "id": "instance-i-101",
+              "name": "web-server-az1-001",
+              "regionId": "us-east-1",
+              "azId": "use1-az1",
+              "instanceType": "t3.medium",
+              "state": "running",
+              "health": "healthy"
+            },
+            {
+              "id": "instance-i-102",
+              "name": "web-server-az2-001",
+              "regionId": "us-east-1",
+              "azId": "use1-az2",
+              "instanceType": "t3.medium",
+              "state": "running",
+              "health": "healthy"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

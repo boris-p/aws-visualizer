@@ -16,14 +16,14 @@ export default function Navigation() {
         map
       </Link>
       <Link
-        to="/aws-hierarchy"
+        to="/aws-visualizer"
         className={
-          location.pathname === '/aws-hierarchy'
+          location.pathname === '/aws-visualizer'
             ? 'text-[#1a1a1a] font-semibold'
             : 'text-[#666] hover:text-[#333]'
         }
       >
-        hierarchy
+        visualizer
       </Link>
     </nav>
   )

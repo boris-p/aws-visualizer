@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import {
   ReactFlow,
   type Node,
@@ -10,7 +10,9 @@ import {
   Position,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
+import "@/styles/scenario-animations.css";
 import awsGeoData from "@/data/aws-geo.json";
+import type { NodeState } from "@/types/graph";
 
 const createHierarchyNodes = (): { nodes: Node[]; edges: Edge[] } => {
   const nodes: Node[] = [];
@@ -133,7 +135,11 @@ const createHierarchyNodes = (): { nodes: Node[]; edges: Edge[] } => {
 
         nodes.push({
           id: azId,
-          data: { label: az.id },
+          data: {
+            label: az.id,
+            isInteractive: true,
+            type: 'az'
+          },
           position: { x: azStartX, y: azY },
           targetPosition: Position.Left,
           style: {
@@ -145,6 +151,7 @@ const createHierarchyNodes = (): { nodes: Node[]; edges: Edge[] } => {
             fontSize: "11px",
             color: "#888",
             minWidth: "90px",
+            cursor: "pointer",
           },
         });
 
@@ -176,7 +183,11 @@ const createHierarchyNodes = (): { nodes: Node[]; edges: Edge[] } => {
 
           nodes.push({
             id: dcId,
-            data: { label: `DC-${dcIndex + 1}` },
+            data: {
+              label: `DC-${dcIndex + 1}`,
+              isInteractive: true,
+              type: 'dc'
+            },
             position: { x: dcStartX, y: dcY },
             targetPosition: Position.Left,
             style: {
@@ -188,6 +199,7 @@ const createHierarchyNodes = (): { nodes: Node[]; edges: Edge[] } => {
               fontSize: "9px",
               color: "#999",
               minWidth: "60px",
+              cursor: "pointer",
             },
           });
 
@@ -404,15 +416,30 @@ interface HierarchyGraphProps {
   visiblePartitions: Set<string>
   showEdgeLocations: boolean
   showDataCenters: boolean
+  nodeStates?: Map<string, NodeState>
+  onNodeStateToggle?: (nodeId: string, newState: string) => void
+  animatingEdges?: Set<string>
 }
 
 export default function HierarchyGraph({
   visiblePartitions,
   showEdgeLocations,
-  showDataCenters
+  showDataCenters,
+  nodeStates,
+  onNodeStateToggle,
+  animatingEdges
 }: HierarchyGraphProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+
+  // Handle node click for interactive nodes
+  const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
+    if (node.data.isInteractive && onNodeStateToggle) {
+      const currentState = nodeStates?.get(node.id)?.status || 'available'
+      const newState = currentState === 'available' ? 'unavailable' : 'available'
+      onNodeStateToggle(node.id, newState)
+    }
+  }, [onNodeStateToggle, nodeStates]);
 
   useEffect(() => {
     const { nodes: hierarchyNodes, edges: hierarchyEdges } =
@@ -483,6 +510,67 @@ export default function HierarchyGraph({
     setEdges(filteredEdges);
   }, [setNodes, setEdges, visiblePartitions, showEdgeLocations, showDataCenters]);
 
+  // Apply node states (failures, availability changes)
+  useEffect(() => {
+    if (!nodeStates || nodeStates.size === 0) return
+
+    setNodes(nds => nds.map(node => {
+      const state = nodeStates.get(node.id)
+      if (!state) return node
+
+      const isUnavailable = state.status === 'unavailable'
+      const isDegraded = state.status === 'degraded'
+
+      return {
+        ...node,
+        data: {
+          ...node.data,
+          state: state.status,
+        },
+        className: `${node.className || ''} ${isUnavailable ? 'node-unavailable' : ''} ${isDegraded ? 'node-degraded' : ''}`.trim(),
+        style: {
+          ...node.style,
+          opacity: isUnavailable ? 0.5 : node.style?.opacity || 1,
+          filter: isUnavailable ? 'grayscale(100%)' : node.style?.filter || 'none',
+        }
+      }
+    }))
+  }, [nodeStates, setNodes])
+
+  // Apply edge animations
+  useEffect(() => {
+    if (!animatingEdges || animatingEdges.size === 0) return
+
+    setEdges(eds => eds.map(edge => {
+      const edgeId = edge.id
+      const isAnimating = animatingEdges.has(edgeId) ||
+                         animatingEdges.has(`${edge.source}-${edge.target}`) ||
+                         animatingEdges.has(`${edge.target}-${edge.source}`)
+
+      if (isAnimating) {
+        return {
+          ...edge,
+          animated: true,
+          className: 'animating',
+          style: {
+            stroke: '#ff6600',
+            strokeWidth: 3,
+          }
+        }
+      }
+
+      return {
+        ...edge,
+        animated: false,
+        className: '',
+        style: {
+          ...edge.style,
+          stroke: edge.style?.stroke || '#b1b1b7',
+        }
+      }
+    }))
+  }, [animatingEdges, setEdges]);
+
   return (
     <div className="w-full h-full bg-[#fafafa]">
       <ReactFlow
@@ -490,6 +578,7 @@ export default function HierarchyGraph({
         edges={edges}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
+        onNodeClick={onNodeClick}
         fitView
         minZoom={0.3}
         maxZoom={1.2}
