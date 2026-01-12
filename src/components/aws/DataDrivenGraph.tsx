@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useMemo } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import {
   ReactFlow,
   type Node,
@@ -33,16 +33,19 @@ export default function DataDrivenGraph({
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
-  // Apply filtering based on visible node types
-  const filteredGraph = useMemo(() => {
-    if (!visibleNodeTypes || visibleNodeTypes.size === 0) {
-      return graphDefinition
-    }
-    return filterGraphByNodeTypes(graphDefinition, visibleNodeTypes)
-  }, [graphDefinition, visibleNodeTypes])
+  // Keep refs to the original graph nodes for label lookup
+  const graphNodesRef = useRef<GraphDefinition['nodes']>([]);
 
-  // Convert graph definition to React Flow nodes
+  // Apply filtering and convert to React Flow format on graph/filter change
   useEffect(() => {
+    let filteredGraph = graphDefinition;
+    if (visibleNodeTypes && visibleNodeTypes.size > 0) {
+      filteredGraph = filterGraphByNodeTypes(graphDefinition, visibleNodeTypes)
+    }
+
+    // Store for label lookup
+    graphNodesRef.current = filteredGraph.nodes;
+
     const flowNodes: Node[] = filteredGraph.nodes.map(node => ({
       id: node.id,
       data: {
@@ -67,61 +70,67 @@ export default function DataDrivenGraph({
 
     setNodes(flowNodes)
     setEdges(flowEdges)
-  }, [filteredGraph, setNodes, setEdges])
+  }, [graphDefinition, visibleNodeTypes, setNodes, setEdges])
 
   // Apply node states (failures, availability changes)
   useEffect(() => {
-    if (!nodeStates || nodeStates.size === 0) return
-
     setNodes(nds => nds.map(node => {
-      const state = nodeStates.get(node.id)
-      if (!state) return node
+      const state = nodeStates?.get(node.id)
 
-      const isUnavailable = state.status === 'unavailable'
-      const isDegraded = state.status === 'degraded'
+      // Determine if node is in active request path
+      const isInActivePath = animatingEdges && Array.from(animatingEdges).some(edgeId =>
+        edgeId.includes(node.id)
+      )
+
+      const isUnavailable = state?.status === 'unavailable'
+      const isDegraded = state?.status === 'degraded'
+
+      // Build className from state
+      const classNames = [
+        isUnavailable ? 'node-unavailable' : '',
+        isDegraded ? 'node-degraded' : '',
+        isInActivePath && !isUnavailable ? 'node-active-path' : ''
+      ].filter(Boolean).join(' ')
+
+      // Get original label from graph definition
+      const originalNode = graphNodesRef.current.find(n => n.id === node.id)
+      const originalLabel = originalNode?.label || ''
+
+      // Compose label with sublabel if present
+      const label = state?.sublabel
+        ? `${originalLabel}\n${state.sublabel}`
+        : originalLabel
 
       return {
         ...node,
         data: {
           ...node.data,
-          state: state.status,
+          label,
+          state: state?.status,
         },
-        className: `${node.className || ''} ${isUnavailable ? 'node-unavailable' : ''} ${isDegraded ? 'node-degraded' : ''}`.trim(),
-        style: {
-          ...node.style,
-          opacity: isUnavailable ? 0.5 : node.style?.opacity || 1,
-          filter: isUnavailable ? 'grayscale(100%)' : node.style?.filter || 'none',
-        }
+        className: classNames,
       }
     }))
-  }, [nodeStates, setNodes])
+  }, [nodeStates, animatingEdges, setNodes])
 
   // Apply edge animations
   useEffect(() => {
-    if (!animatingEdges || animatingEdges.size === 0) return
-
     setEdges(eds => eds.map(edge => {
-      const isAnimating = animatingEdges.has(edge.id) ||
-                         animatingEdges.has(`${edge.source}-${edge.target}`) ||
-                         animatingEdges.has(`${edge.target}-${edge.source}`)
-
-      if (isAnimating) {
-        return {
-          ...edge,
-          animated: true,
-          className: 'animating',
-          style: {
-            ...edge.style,
-            stroke: '#ff6600',
-            strokeWidth: 3,
-          }
-        }
-      }
+      const isActive = animatingEdges && (
+        animatingEdges.has(edge.id) ||
+        animatingEdges.has(`${edge.source}-${edge.target}`) ||
+        animatingEdges.has(`${edge.target}-${edge.source}`)
+      )
 
       return {
         ...edge,
-        animated: false,
-        className: '',
+        animated: isActive,
+        className: isActive ? 'edge-active-flow' : '',
+        style: {
+          ...edge.style,
+          stroke: isActive ? '#0066cc' : '#e5e5e5',
+          strokeWidth: isActive ? 3 : 1,
+        }
       }
     }))
   }, [animatingEdges, setEdges])

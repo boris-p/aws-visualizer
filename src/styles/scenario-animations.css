@@ -1,42 +1,112 @@
-/* Node state styles */
-.node-available {
-  transition: all 0.3s ease;
+/* ======================================
+   Node State Styles
+   ====================================== */
+
+/* Base node styling transition */
+.react-flow__node {
+  transition: filter 0.2s ease, box-shadow 0.2s ease;
 }
 
-.node-unavailable {
-  transition: all 0.3s ease;
-  filter: grayscale(100%);
+/* Default node label styling for sublabels */
+.react-flow__node .react-flow__node-default {
+  white-space: pre-line; /* Support line breaks in labels */
+  text-align: center;
+  padding: 10px 15px;
 }
 
-.node-degraded {
-  transition: all 0.3s ease;
-  opacity: 0.7;
+/* Active path - blue border + glow */
+.react-flow__node.node-active-path {
+  filter: drop-shadow(0 0 8px rgba(0, 102, 204, 0.5));
 }
+
+.react-flow__node.node-active-path .react-flow__node-default {
+  border-color: #0066cc !important;
+  border-width: 2px;
+  background: #f0f7ff;
+}
+
+/* Unavailable - red border + glow + red sublabel */
+.react-flow__node.node-unavailable {
+  filter: drop-shadow(0 0 10px rgba(239, 68, 68, 0.5));
+}
+
+.react-flow__node.node-unavailable .react-flow__node-default {
+  border-color: #ef4444 !important;
+  border-width: 3px;
+  background: #fef2f2;
+}
+
+/* Degraded - orange border */
+.react-flow__node.node-degraded .react-flow__node-default {
+  border-color: #f59e0b !important;
+  border-width: 3px;
+  background: #fffbeb;
+}
+
+/* ======================================
+   Edge Animation Styles
+   ====================================== */
+
+/* Active flow path animation - stable, no flicker */
+@keyframes edge-flow {
+  from {
+    stroke-dashoffset: 12;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.react-flow__edge.edge-active-flow path {
+  stroke: #0066cc !important;
+  stroke-width: 3px !important;
+  stroke-dasharray: 8 4;
+  animation: edge-flow 0.8s linear infinite;
+}
+
+/* Failed/broken edge - dashed red */
+.react-flow__edge.edge-failed path {
+  stroke: #ef4444 !important;
+  stroke-dasharray: 4 4;
+  stroke-width: 2px !important;
+}
+
+/* Inactive edges - subtle gray */
+.react-flow__edge path {
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+}
+
+/* ======================================
+   Legacy animations (kept for compatibility)
+   ====================================== */
 
 /* Pulse animation for state changes */
 @keyframes statePulse {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+  50% { transform: scale(1.05); }
 }
 
 .node-state-changing {
-  animation: statePulse 0.6s ease-in-out;
+  animation: statePulse 0.5s ease-in-out;
 }
 
-/* Request flow animation */
+/* Request flow animation (legacy) */
 @keyframes flowAnimation {
   0% { stroke-dashoffset: 0; }
   100% { stroke-dashoffset: -24px; }
 }
 
-.react-flow__edge.animating {
+.react-flow__edge.animating path {
   stroke-dasharray: 8 4;
   animation: flowAnimation 1s linear infinite;
   stroke-width: 3px !important;
   stroke: #ff6600 !important;
 }
 
-/* Status indicators */
+/* ======================================
+   Status Indicators (optional overlay)
+   ====================================== */
+
 .node-status-indicator {
   position: absolute;
   top: -8px;
@@ -45,6 +115,7 @@
   height: 16px;
   border-radius: 50%;
   border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .node-status-indicator.healthy {

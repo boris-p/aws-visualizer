@@ -5,8 +5,7 @@ import NodeTypeFilter from '@/components/aws/NodeTypeFilter'
 import Navigation from '@/components/Navigation'
 import { useScenarioPlayer } from '@/hooks/useScenarioPlayer'
 import ScenarioSelector from '@/components/scenarios/ScenarioSelector'
-import ScenarioPlayerControls from '@/components/scenarios/ScenarioPlayerControls'
-import ScenarioInfo from '@/components/scenarios/ScenarioInfo'
+import ScenarioPlayer from '@/components/scenarios/ScenarioPlayer'
 import type { Scenario } from '@/types/scenario'
 import type { GraphDefinition } from '@/types/graph-type'
 import { getAvailableNodeTypes } from '@/utils/graphFilters'
@@ -51,6 +50,7 @@ export default function AWSVisualizerPage() {
     play,
     pause,
     reset,
+    seek,
     toggleNodeState
   } = useScenarioPlayer(selectedScenario)
 
@@ -132,7 +132,7 @@ export default function AWSVisualizerPage() {
             </>
           )}
 
-          {/* Scenario controls - only show if graph has scenarios */}
+          {/* Scenario selector - only show if graph has scenarios */}
           {availableScenarios.length > 0 && (
             <>
               <div className="w-px h-6 bg-[#e5e5e5]" />
@@ -141,17 +141,6 @@ export default function AWSVisualizerPage() {
                 selectedId={selectedScenarioId}
                 onSelect={setSelectedScenarioId}
               />
-              {selectedScenario && (
-                <ScenarioPlayerControls
-                  isPlaying={isPlaying}
-                  isPaused={isPaused}
-                  currentTimeMs={currentTimeMs}
-                  durationMs={selectedScenario.durationMs}
-                  onPlay={play}
-                  onPause={pause}
-                  onReset={reset}
-                />
-              )}
             </>
           )}
         </div>
@@ -172,7 +161,7 @@ export default function AWSVisualizerPage() {
           </div>
         )}
 
-        {/* Graph description overlay */}
+        {/* Graph description overlay - only show when no scenario selected */}
         {selectedGraph && !selectedScenario && (
           <div className="absolute bottom-4 left-4 bg-white border border-[#e5e5e5] rounded p-3 max-w-md font-mono text-xs shadow-lg">
             <div className="font-semibold mb-1">{selectedGraph.name}</div>
@@ -185,8 +174,19 @@ export default function AWSVisualizerPage() {
           </div>
         )}
 
-        {/* Scenario info overlay */}
-        {selectedScenario && <ScenarioInfo scenario={selectedScenario} />}
+        {/* Scenario player at bottom-center */}
+        {selectedScenario && (
+          <ScenarioPlayer
+            scenario={selectedScenario}
+            isPlaying={isPlaying}
+            isPaused={isPaused}
+            currentTimeMs={currentTimeMs}
+            onPlay={play}
+            onPause={pause}
+            onReset={reset}
+            onSeek={seek}
+          />
+        )}
       </main>
     </div>
   )

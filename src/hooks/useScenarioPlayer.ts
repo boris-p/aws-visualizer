@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Scenario } from '@/types/scenario'
 import type { NodeState } from '@/types/graph'
+import type { GraphDefinition } from '@/types/graph-type'
+import { ScenarioRunner } from '@/lib/scenario-engine'
 
 interface ScenarioPlayerState {
   isPlaying: boolean
@@ -9,27 +11,55 @@ interface ScenarioPlayerState {
   currentStepIndex: number
   nodeStates: Map<string, NodeState>
   animatingEdges: Set<string>
+  activeFlowId: string | null
 }
 
-export function useScenarioPlayer(scenario: Scenario | null) {
+export function useScenarioPlayer(scenario: Scenario | null, graphTopology?: GraphDefinition) {
   const [state, setState] = useState<ScenarioPlayerState>({
     isPlaying: false,
     isPaused: false,
     currentTimeMs: 0,
     currentStepIndex: 0,
     nodeStates: new Map(),
-    animatingEdges: new Set()
+    animatingEdges: new Set(),
+    activeFlowId: null
   })
 
   const animationFrameRef = useRef<number>()
   const lastTimestampRef = useRef<number>(0)
+  const currentTimeMsRef = useRef<number>(0) // Track time in ref for animation loop
 
-  // Play/Pause/Reset functions
+  // Create scenario runner instance
+  const runnerRef = useRef<ScenarioRunner | null>(null)
+
+  // Create or update runner when scenario changes - also reset UI state
+  useEffect(() => {
+    if (scenario) {
+      runnerRef.current = new ScenarioRunner(scenario, graphTopology)
+      currentTimeMsRef.current = 0
+
+      // Reset UI state when scenario changes
+      setState({
+        isPlaying: false,
+        isPaused: false,
+        currentTimeMs: 0,
+        currentStepIndex: 0,
+        nodeStates: new Map(),
+        animatingEdges: new Set(),
+        activeFlowId: null
+      })
+    } else {
+      runnerRef.current = null
+    }
+  }, [scenario, graphTopology])
+
+  // Play function
   const play = useCallback(() => {
     setState(s => ({ ...s, isPlaying: true, isPaused: false }))
     lastTimestampRef.current = performance.now()
   }, [])
 
+  // Pause function
   const pause = useCallback(() => {
     setState(s => ({ ...s, isPlaying: false, isPaused: true }))
     if (animationFrameRef.current) {
@@ -37,112 +67,71 @@ export function useScenarioPlayer(scenario: Scenario | null) {
     }
   }, [])
 
+  // Reset function
   const reset = useCallback(() => {
+    const runner = runnerRef.current
+    if (runner) {
+      runner.reset()
+    }
+
+    currentTimeMsRef.current = 0
+
     setState({
       isPlaying: false,
       isPaused: false,
       currentTimeMs: 0,
       currentStepIndex: 0,
       nodeStates: new Map(),
-      animatingEdges: new Set()
+      animatingEdges: new Set(),
+      activeFlowId: null
     })
+
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current)
     }
   }, [])
 
-  // Animation loop
+  // Animation loop - uses runner.advanceTo for incremental updates
   useEffect(() => {
-    if (!scenario || !state.isPlaying) return
+    const runner = runnerRef.current
+    if (!runner || !scenario || !state.isPlaying) return
 
     const animate = (timestamp: number) => {
       const deltaMs = timestamp - lastTimestampRef.current
       lastTimestampRef.current = timestamp
 
-      setState(s => {
-        const newTimeMs = s.currentTimeMs + deltaMs
+      // Use ref for current time to avoid stale closure
+      const newTimeMs = currentTimeMsRef.current + deltaMs
+      currentTimeMsRef.current = newTimeMs
 
-        // Check if scenario completed
-        if (newTimeMs >= scenario.durationMs) {
-          return { ...s, isPlaying: false, currentTimeMs: scenario.durationMs }
-        }
-
-        // Process events at current timestamp
-        const eventsToProcess = scenario.events.filter(
-          e => e.timestampMs <= newTimeMs && e.timestampMs > s.currentTimeMs
-        )
-
-        const newNodeStates = new Map(s.nodeStates)
-        const newAnimatingEdges = new Set(s.animatingEdges)
-
-        eventsToProcess.forEach(event => {
-          switch (event.action) {
-            case 'fail':
-              newNodeStates.set(event.targetId, {
-                id: event.targetId,
-                status: 'unavailable',
-                isAnimating: true,
-                animationType: 'failure',
-                lastStateChange: newTimeMs
-              })
-              break
-            case 'recover':
-              newNodeStates.set(event.targetId, {
-                id: event.targetId,
-                status: 'available',
-                isAnimating: true,
-                animationType: 'pulse',
-                lastStateChange: newTimeMs
-              })
-              // Remove from nodeStates after recovery
-              setTimeout(() => {
-                setState(s => {
-                  const updated = new Map(s.nodeStates)
-                  updated.delete(event.targetId)
-                  return { ...s, nodeStates: updated }
-                })
-              }, 1000)
-              break
-            case 'route-request': {
-              // Find path and animate edges
-              const flow = scenario.requestFlows.find(f => f.targetServiceId === event.targetId)
-              if (flow) {
-                // Add edges to animation set
-                flow.path.forEach((nodeId, idx) => {
-                  if (idx < flow.path.length - 1) {
-                    const edgeId = `${nodeId}-${flow.path[idx + 1]}`
-                    // Try both directions for edge matching
-                    newAnimatingEdges.add(edgeId)
-                    newAnimatingEdges.add(`${flow.path[idx + 1]}-${nodeId}`)
-                  }
-                })
-                // Clear animation after flow duration
-                setTimeout(() => {
-                  setState(s => {
-                    const updatedEdges = new Set(s.animatingEdges)
-                    flow.path.forEach((nodeId, idx) => {
-                      if (idx < flow.path.length - 1) {
-                        updatedEdges.delete(`${nodeId}-${flow.path[idx + 1]}`)
-                        updatedEdges.delete(`${flow.path[idx + 1]}-${nodeId}`)
-                      }
-                    })
-                    return { ...s, animatingEdges: updatedEdges }
-                  })
-                }, flow.latencyMs)
-              }
-              break
-            }
-          }
-        })
-
-        return {
+      // Check if scenario completed
+      if (newTimeMs >= scenario.durationMs) {
+        runner.seekTo(scenario.durationMs)
+        const snapshot = runner.getSnapshot()
+        setState(s => ({
           ...s,
-          currentTimeMs: newTimeMs,
-          currentStepIndex: scenario.events.findIndex(e => e.timestampMs > newTimeMs),
-          nodeStates: newNodeStates,
-          animatingEdges: newAnimatingEdges
-        }
-      })
+          isPlaying: false,
+          currentTimeMs: scenario.durationMs,
+          nodeStates: snapshot.nodeStates,
+          animatingEdges: snapshot.animatingEdges,
+          activeFlowId: snapshot.activeFlowId,
+          currentStepIndex: snapshot.processedEventIds.size
+        }))
+        return
+      }
+
+      // Advance runner and sync state
+      runner.advanceTo(newTimeMs)
+      const snapshot = runner.getSnapshot()
+
+      setState(s => ({
+        ...s,
+        currentTimeMs: newTimeMs,
+        nodeStates: snapshot.nodeStates,
+        animatingEdges: snapshot.animatingEdges,
+        activeFlowId: snapshot.activeFlowId,
+        currentStepIndex: snapshot.processedEventIds.size
+      }))
 
       animationFrameRef.current = requestAnimationFrame(animate)
     }
@@ -154,9 +143,35 @@ export function useScenarioPlayer(scenario: Scenario | null) {
         cancelAnimationFrame(animationFrameRef.current)
       }
     }
-  }, [scenario, state.isPlaying])
+  }, [scenario, state.isPlaying]) // Removed state.currentTimeMs from deps
 
-  // Manual node state override
+  // Seek to specific time - uses runner.seekTo for full state rebuild
+  const seek = useCallback((timeMs: number) => {
+    const runner = runnerRef.current
+    if (!runner || !scenario) return
+
+    const clampedTime = Math.max(0, Math.min(timeMs, scenario.durationMs))
+
+    // Update ref for animation loop
+    currentTimeMsRef.current = clampedTime
+
+    // Runner handles full state rebuild on seek
+    runner.seekTo(clampedTime)
+    const snapshot = runner.getSnapshot()
+
+    setState(s => ({
+      ...s,
+      currentTimeMs: clampedTime,
+      nodeStates: snapshot.nodeStates,
+      animatingEdges: snapshot.animatingEdges,
+      activeFlowId: snapshot.activeFlowId,
+      currentStepIndex: snapshot.processedEventIds.size
+    }))
+
+    lastTimestampRef.current = performance.now()
+  }, [scenario])
+
+  // Manual node state override (for testing/debugging)
   const toggleNodeState = useCallback((nodeId: string, newState: 'available' | 'unavailable') => {
     setState(s => {
       const newNodeStates = new Map(s.nodeStates)
@@ -176,6 +191,7 @@ export function useScenarioPlayer(scenario: Scenario | null) {
     play,
     pause,
     reset,
+    seek,
     toggleNodeState
   }
 }

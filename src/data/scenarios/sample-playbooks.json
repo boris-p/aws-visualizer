@@ -6,11 +6,11 @@
       "description": "Shows a normal request path with no failures",
       "graphId": "ec2-scenario-playground",
       "infrastructureId": "simple-single-az",
-      "durationMs": 5000,
+      "durationMs": 2500,
       "events": [
         {
           "id": "initial-request",
-          "timestampMs": 500,
+          "timestampMs": 250,
           "action": "route-request",
           "targetType": "service",
           "targetId": "web-service-1"
@@ -41,47 +41,49 @@
       "description": "Single AZ deployment fails - service becomes unavailable",
       "graphId": "ec2-scenario-playground",
       "infrastructureId": "simple-single-az",
-      "durationMs": 12000,
+      "durationMs": 6000,
       "events": [
         {
           "id": "request-1",
-          "timestampMs": 1000,
+          "timestampMs": 500,
           "action": "route-request",
           "targetType": "service",
           "targetId": "web-service-1"
         },
         {
           "id": "az-fails",
-          "timestampMs": 5000,
+          "timestampMs": 2500,
           "action": "fail",
           "targetType": "az",
           "targetId": "az-us-east-1-use1-az1",
           "failureType": "az-outage",
-          "severity": "high"
+          "severity": "high",
+          "failureMessage": "AZ Unavailable"
         },
         {
           "id": "request-2-fails",
-          "timestampMs": 7000,
+          "timestampMs": 3500,
           "action": "route-request",
           "targetType": "service",
-          "targetId": "web-service-1"
+          "targetId": "web-service-1",
+          "flowId": "req-2"
         }
       ],
       "requestFlows": [
         {
           "id": "req-1",
-          "sourceLocation": "User (London)",
+          "sourceLocation": "User (San Francisco)",
           "targetServiceId": "web-service-1",
-          "path": ["edge-lon", "region-us-east-1", "az-us-east-1-use1-az1", "dc-us-east-1-use1-az1-1"],
+          "path": ["edge-sfo", "region-us-east-1", "az-us-east-1-use1-az1", "dc-us-east-1-use1-az1-1"],
           "latencyMs": 1000,
           "status": "success",
           "routingStrategy": "cloudfront"
         },
         {
           "id": "req-2",
-          "sourceLocation": "User (London)",
+          "sourceLocation": "User (San Francisco)",
           "targetServiceId": "web-service-1",
-          "path": ["edge-lon", "region-us-east-1", "az-us-east-1-use1-az1"],
+          "path": ["edge-sfo", "region-us-east-1", "az-us-east-1-use1-az1", "dc-us-east-1-use1-az1-1"],
           "latencyMs": 800,
           "status": "failed",
           "routingStrategy": "cloudfront"
@@ -101,44 +103,48 @@
       "description": "Multi-AZ deployment handles AZ failure gracefully",
       "graphId": "ec2-scenario-playground",
       "infrastructureId": "multi-az-redundant",
-      "durationMs": 15000,
+      "durationMs": 7500,
       "events": [
         {
           "id": "initial-traffic",
-          "timestampMs": 1000,
+          "timestampMs": 500,
           "action": "route-request",
           "targetType": "service",
-          "targetId": "web-service-ha"
+          "targetId": "web-service-ha",
+          "flowId": "req-before-failure"
         },
         {
           "id": "az1-fails",
-          "timestampMs": 5000,
+          "timestampMs": 2500,
           "action": "fail",
           "targetType": "az",
           "targetId": "az-us-east-1-use1-az1",
           "failureType": "az-outage",
-          "severity": "high"
+          "severity": "high",
+          "failureMessage": "AZ Unavailable"
         },
         {
           "id": "traffic-rerouted",
-          "timestampMs": 6000,
+          "timestampMs": 3000,
           "action": "route-request",
           "targetType": "service",
-          "targetId": "web-service-ha"
+          "targetId": "web-service-ha",
+          "flowId": "req-during-failure"
         },
         {
           "id": "az1-recovers",
-          "timestampMs": 10000,
+          "timestampMs": 5000,
           "action": "recover",
           "targetType": "az",
           "targetId": "az-us-east-1-use1-az1"
         },
         {
           "id": "traffic-rebalanced",
-          "timestampMs": 11000,
+          "timestampMs": 5500,
           "action": "route-request",
           "targetType": "service",
-          "targetId": "web-service-ha"
+          "targetId": "web-service-ha",
+          "flowId": "req-after-recovery"
         }
       ],
       "requestFlows": [
@@ -149,7 +155,8 @@
           "path": ["edge-sfo", "region-us-east-1", "az-us-east-1-use1-az1", "dc-us-east-1-use1-az1-1"],
           "latencyMs": 900,
           "status": "success",
-          "routingStrategy": "cloudfront"
+          "routingStrategy": "cloudfront",
+          "visualState": "primary"
         },
         {
           "id": "req-during-failure",
@@ -158,7 +165,8 @@
           "path": ["edge-sfo", "region-us-east-1", "az-us-east-1-use1-az2", "dc-us-east-1-use1-az2-1"],
           "latencyMs": 950,
           "status": "success",
-          "routingStrategy": "cloudfront"
+          "routingStrategy": "cloudfront",
+          "visualState": "failover"
         },
         {
           "id": "req-after-recovery",
@@ -167,7 +175,8 @@
           "path": ["edge-sfo", "region-us-east-1", "az-us-east-1-use1-az1", "dc-us-east-1-use1-az1-1"],
           "latencyMs": 900,
           "status": "success",
-          "routingStrategy": "cloudfront"
+          "routingStrategy": "cloudfront",
+          "visualState": "primary"
         }
       ],
       "expectedOutcome": "Traffic automatically reroutes to healthy AZ, then rebalances after recovery",
