@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef, useMemo } from "react";
 import {
   ReactFlow,
   type Node,
@@ -13,7 +13,14 @@ import "@xyflow/react/dist/style.css";
 import "@/styles/scenario-animations.css";
 import type { NodeState } from "@/types/graph";
 import type { GraphDefinition } from "@/types/graph-type";
+import type { Token, WaitPointState } from "@/types/token";
 import { filterGraphByNodeTypes } from "@/utils/graphFilters";
+import TokenFlowEdge from "@/components/graph/TokenFlowEdge";
+
+// Register custom edge types
+const edgeTypes = {
+  tokenFlow: TokenFlowEdge,
+};
 
 interface DataDrivenGraphProps {
   graphDefinition: GraphDefinition
@@ -21,6 +28,9 @@ interface DataDrivenGraphProps {
   onNodeStateToggle?: (nodeId: string, newState: string) => void
   animatingEdges?: Set<string>
   visibleNodeTypes?: Set<string>
+  tokens?: Token[]
+  waitPoints?: Map<string, WaitPointState>
+  currentTimeMs?: number
 }
 
 export default function DataDrivenGraph({
@@ -28,7 +38,10 @@ export default function DataDrivenGraph({
   nodeStates,
   onNodeStateToggle,
   animatingEdges,
-  visibleNodeTypes
+  visibleNodeTypes,
+  tokens = [],
+  waitPoints,
+  currentTimeMs = 0,
 }: DataDrivenGraphProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
@@ -64,8 +77,13 @@ export default function DataDrivenGraph({
       id: edge.id,
       source: edge.source,
       target: edge.target,
-      type: edge.type || 'smoothstep',
-      style: edge.style || {}
+      type: 'tokenFlow', // Use custom edge type for token visualization
+      style: edge.style || {},
+      data: {
+        tokens: [],
+        currentTimeMs: 0,
+        isActive: false,
+      }
     }))
 
     setNodes(flowNodes)
@@ -113,7 +131,7 @@ export default function DataDrivenGraph({
     }))
   }, [nodeStates, animatingEdges, setNodes])
 
-  // Apply edge animations
+  // Apply edge animations and tokens
   useEffect(() => {
     setEdges(eds => eds.map(edge => {
       const isActive = animatingEdges && (
@@ -122,18 +140,37 @@ export default function DataDrivenGraph({
         animatingEdges.has(`${edge.target}-${edge.source}`)
       )
 
+      // Find tokens on this edge
+      const edgeTokens = tokens.filter(token => {
+        if (token.status !== 'traveling') return false
+        const sourceNode = token.path[token.currentEdgeIndex]
+        const targetNode = token.path[token.currentEdgeIndex + 1]
+        return sourceNode === edge.source && targetNode === edge.target
+      })
+
+      // Edge is active if it has tokens or is in animatingEdges
+      const hasTokens = edgeTokens.length > 0
+      const showAsActive = isActive || hasTokens
+
       return {
         ...edge,
-        animated: isActive,
-        className: isActive ? 'edge-active-flow' : '',
-        style: {
+        animated: false, // We handle animation in custom edge
+        className: showAsActive ? 'edge-active-flow' : '',
+        data: {
+          ...edge.data,
+          tokens: edgeTokens,
+          currentTimeMs,
+          isActive: showAsActive,
+        },
+        // Only override style when active - let default edge color show otherwise
+        style: showAsActive ? {
           ...edge.style,
-          stroke: isActive ? '#0066cc' : '#e5e5e5',
-          strokeWidth: isActive ? 3 : 1,
-        }
+          stroke: '#0066cc',
+          strokeWidth: 2,
+        } : edge.style
       }
     }))
-  }, [animatingEdges, setEdges])
+  }, [animatingEdges, tokens, currentTimeMs, setEdges])
 
   // Handle node click for interactive nodes
   const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
@@ -149,6 +186,7 @@ export default function DataDrivenGraph({
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}
         onNodeClick={onNodeClick}

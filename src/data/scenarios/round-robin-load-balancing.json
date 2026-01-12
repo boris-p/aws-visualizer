@@ -1,0 +1,58 @@
+{
+  "id": "round-robin-load-balancing",
+  "name": "Round-Robin Load Balancing",
+  "description": "ALB distributes requests across AZs using round-robin algorithm",
+  "graphId": "ec2-scenario-playground-detailed",
+  "infrastructureId": "multi-az-alb",
+  "durationMs": 25000,
+  "tokenFlowConfig": {
+    "defaultEdgeDurationMs": 1500,
+    "tokenTypes": [
+      { "id": "http-request", "shape": "circle", "color": "#3b82f6", "size": 8 }
+    ],
+    "waitPoints": [
+      {
+        "nodeId": "alb-main",
+        "type": "queue",
+        "processIntervalMs": 1000,
+        "strategy": "fifo"
+      }
+    ]
+  },
+  "algorithms": {
+    "pathSelector": { "type": "healthiest" },
+    "loadBalancer": { "type": "round-robin" }
+  },
+  "events": [
+    { "id": "req-1", "timestampMs": 500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "generic-request" },
+    { "id": "req-2", "timestampMs": 1500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "generic-request" },
+    { "id": "req-3", "timestampMs": 2500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "generic-request" },
+    { "id": "req-4", "timestampMs": 3500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "generic-request" },
+    { "id": "req-5", "timestampMs": 4500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "generic-request" },
+    { "id": "req-6", "timestampMs": 5500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "generic-request" },
+    { "id": "req-7", "timestampMs": 6500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "generic-request" },
+    { "id": "req-8", "timestampMs": 7500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "generic-request" }
+  ],
+  "requestFlows": [
+    {
+      "id": "generic-request",
+      "sourceLocation": "User (San Francisco)",
+      "targetServiceId": "web-service",
+      "path": ["edge-sfo", "region-us-east-1", "alb-main"],
+      "latencyMs": 100,
+      "status": "success",
+      "routingStrategy": "cloudfront",
+      "pathConstraints": {
+        "candidates": ["az-us-east-1-use1-az1", "az-us-east-1-use1-az2"]
+      },
+      "queueAtNodes": ["alb-main"]
+    }
+  ],
+  "expectedOutcome": "Requests alternate between AZ1 and AZ2 in round-robin fashion",
+  "awsContext": {
+    "useCloudFront": true,
+    "useMultiAz": true,
+    "useAutoScaling": false,
+    "healthCheckEnabled": true
+  }
+}

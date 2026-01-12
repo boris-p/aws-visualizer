@@ -1,0 +1,62 @@
+{
+  "id": "az-failure-no-redundancy",
+  "name": "AZ Failure (No Redundancy)",
+  "description": "Single AZ deployment fails - service becomes unavailable",
+  "graphId": "ec2-scenario-playground",
+  "infrastructureId": "simple-single-az",
+  "durationMs": 6000,
+  "events": [
+    {
+      "id": "request-1",
+      "timestampMs": 500,
+      "action": "route-request",
+      "targetType": "service",
+      "targetId": "web-service-1"
+    },
+    {
+      "id": "az-fails",
+      "timestampMs": 2500,
+      "action": "fail",
+      "targetType": "az",
+      "targetId": "az-us-east-1-use1-az1",
+      "failureType": "az-outage",
+      "severity": "high",
+      "failureMessage": "AZ Unavailable"
+    },
+    {
+      "id": "request-2-fails",
+      "timestampMs": 3500,
+      "action": "route-request",
+      "targetType": "service",
+      "targetId": "web-service-1",
+      "flowId": "req-2"
+    }
+  ],
+  "requestFlows": [
+    {
+      "id": "req-1",
+      "sourceLocation": "User (San Francisco)",
+      "targetServiceId": "web-service-1",
+      "path": ["edge-sfo", "region-us-east-1", "az-us-east-1-use1-az1", "dc-us-east-1-use1-az1-1"],
+      "latencyMs": 1000,
+      "status": "success",
+      "routingStrategy": "cloudfront"
+    },
+    {
+      "id": "req-2",
+      "sourceLocation": "User (San Francisco)",
+      "targetServiceId": "web-service-1",
+      "path": ["edge-sfo", "region-us-east-1", "az-us-east-1-use1-az1", "dc-us-east-1-use1-az1-1"],
+      "latencyMs": 800,
+      "status": "failed",
+      "routingStrategy": "cloudfront"
+    }
+  ],
+  "expectedOutcome": "Service becomes completely unavailable when AZ fails",
+  "awsContext": {
+    "useCloudFront": true,
+    "useMultiAz": false,
+    "useAutoScaling": false,
+    "healthCheckEnabled": false
+  }
+}

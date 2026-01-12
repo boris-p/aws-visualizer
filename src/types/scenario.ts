@@ -43,12 +43,43 @@ export interface RequestFlow {
     excludeNodes?: string[]
     candidates?: string[] // Nodes to choose from for load balancing
   }
+  queueAtNodes?: string[] // Nodes where particles should queue (e.g., load balancers)
 }
 
 // Algorithm reference in scenario definition
 export interface AlgorithmRef {
   type: string // Algorithm ID (e.g., "round-robin", "majority-quorum")
   config?: Record<string, unknown> // Algorithm-specific configuration
+}
+
+// Legacy particle configuration (deprecated, use tokenFlowConfig)
+export interface ParticleConfigRef {
+  edgeLatencyMs?: number       // Default time to traverse an edge
+  queueProcessingMs?: number   // Default time between queue releases
+}
+
+// Token flow configuration for scenario
+export interface TokenFlowConfigRef {
+  defaultEdgeDurationMs?: number
+  tokenTypes?: Array<{
+    id: string
+    shape: 'circle' | 'square' | 'diamond' | 'triangle'
+    color: string
+    size: number
+    label?: string
+  }>
+  waitPoints?: Array<{
+    nodeId: string
+    type: 'queue' | 'processing' | 'fanout-wait'
+    capacity?: number
+    processIntervalMs: number
+    strategy: 'fifo' | 'priority' | 'batch'
+  }>
+  edgeTimings?: Array<{
+    sourceNode: string
+    targetNode: string
+    durationMs: number
+  }>
 }
 
 export interface Scenario {
@@ -74,4 +105,8 @@ export interface Scenario {
     failoverStrategy?: AlgorithmRef
     consensus?: AlgorithmRef
   }
+  // Token flow visualization configuration
+  tokenFlowConfig?: TokenFlowConfigRef
+  // Legacy particle configuration (deprecated)
+  particleConfig?: ParticleConfigRef
 }

@@ -1,6 +1,7 @@
 import type { Scenario, ScenarioEvent, RequestFlow } from './scenario'
 import type { NodeState } from './graph'
 import type { GraphDefinition } from './graph-type'
+import type { Token, WaitPointState } from './token'
 
 // Execution context passed to all event handlers and algorithms
 export interface ScenarioExecutionContext {
@@ -76,6 +77,9 @@ export interface ScenarioSnapshot {
   animatingEdges: Set<string>
   activeFlowId: string | null
   processedEventIds: Set<string>
+  // Token flow state
+  tokens: Token[]
+  waitPoints: Map<string, WaitPointState>
 }
 
 // Default failure messages by target type

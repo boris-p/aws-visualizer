@@ -37,6 +37,17 @@ export const staticPathSelector: PathSelector = {
   }
 }
 
+// Helper to find downstream nodes (e.g., DCs within an AZ) using graph topology
+function findDownstreamNodes(nodeId: string, context: ScenarioExecutionContext): string[] {
+  const { graphTopology } = context
+  if (!graphTopology?.edges) return []
+
+  // Find edges where this node is the source
+  return graphTopology.edges
+    .filter(edge => edge.source === nodeId)
+    .map(edge => edge.target)
+}
+
 // Healthiest path selector - finds a path avoiding unhealthy nodes
 export const healthiestPathSelector: PathSelector = {
   id: 'healthiest',
@@ -52,21 +63,37 @@ export const healthiestPathSelector: PathSelector = {
     const candidates = flow.pathConstraints?.candidates
     if (loadBalancer && candidates && candidates.length > 0) {
       const selectedNode = loadBalancer.selectNode(candidates, context)
-
-      // Build path through the selected node
-      // This is a simplified version - full implementation would use graph traversal
       const basePath = flow.path || []
 
-      // Replace the AZ/DC portion with the selected node
-      const newPath = basePath.map(nodeId => {
-        // If this node is one of the candidates, replace with selected
-        if (candidates.includes(nodeId)) {
-          return selectedNode
-        }
-        return nodeId
-      })
+      // Check if any candidate is already in the path (replace mode)
+      const hasCandidate = basePath.some(nodeId => candidates.includes(nodeId))
 
-      return newPath
+      if (hasCandidate) {
+        // Replace mode: swap candidate nodes with selected
+        return basePath.map(nodeId => {
+          if (candidates.includes(nodeId)) {
+            return selectedNode
+          }
+          return nodeId
+        })
+      } else {
+        // Append mode: path ends before candidates (e.g., at ALB)
+        // Append the selected node and find a downstream DC
+        const fullPath = [...basePath, selectedNode]
+
+        // Find DCs within the selected AZ
+        const downstreamNodes = findDownstreamNodes(selectedNode, context)
+        if (downstreamNodes.length > 0) {
+          // Pick first healthy DC, or first one if all unhealthy
+          const healthyDc = downstreamNodes.find(nodeId => {
+            const state = context.nodeStates.get(nodeId)
+            return !state || state.status !== 'unavailable'
+          })
+          fullPath.push(healthyDc || downstreamNodes[0])
+        }
+
+        return fullPath
+      }
     }
 
     // Fall back to static path logic

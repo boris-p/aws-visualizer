@@ -4,9 +4,13 @@ import type { GraphDefinition } from '@/types/graph-type'
 import type {
   ScenarioExecutionContext,
   ScenarioSnapshot,
-  EventResult
+  EventResult,
+  PathSelector
 } from '@/types/scenario-engine'
+import type { TokenFlowConfig, WaitPoint } from '@/types/token'
 import { processEvent } from './event-handlers'
+import { TokenEngine } from './token-engine'
+import { algorithmRegistry } from '@/lib/algorithm-registry'
 
 export class ScenarioRunner {
   private scenario: Scenario
@@ -17,10 +21,56 @@ export class ScenarioRunner {
   private activeFlowId: string | null = null
   private processedEventIds: Set<string> = new Set()
   private algorithmState: Map<string, unknown> = new Map()
+  private tokenEngine: TokenEngine = new TokenEngine()
 
   constructor(scenario: Scenario, graphTopology?: GraphDefinition) {
     this.scenario = scenario
     this.graphTopology = graphTopology || { nodes: [], edges: [] }
+    this.initializeTokenEngine()
+  }
+
+  // Initialize token engine with scenario config
+  private initializeTokenEngine(): void {
+    // Set up config from scenario
+    const config = this.scenario.tokenFlowConfig
+    if (config) {
+      this.tokenEngine.setConfig({
+        defaultEdgeDurationMs: config.defaultEdgeDurationMs,
+        edgeTimings: config.edgeTimings || [],
+        waitPoints: config.waitPoints || [],
+        tokenTypes: config.tokenTypes || [],
+      })
+
+      // Set up wait points
+      if (config.waitPoints) {
+        for (const waitPoint of config.waitPoints) {
+          this.tokenEngine.setupWaitPoint(waitPoint)
+        }
+      }
+    }
+
+    // Also check for legacy particleConfig and queueAtNodes
+    const legacyConfig = this.scenario.particleConfig
+    if (legacyConfig) {
+      this.tokenEngine.setConfig({
+        defaultEdgeDurationMs: legacyConfig.edgeLatencyMs || 1500,
+      })
+    }
+
+    // Set up queues at nodes specified in request flows
+    for (const flow of this.scenario.requestFlows) {
+      if (flow.queueAtNodes) {
+        for (const nodeId of flow.queueAtNodes) {
+          const waitPoint: WaitPoint = {
+            nodeId,
+            type: 'queue',
+            processIntervalMs: legacyConfig?.queueProcessingMs || 800,
+            strategy: 'fifo',
+          }
+          this.tokenEngine.setupWaitPoint(waitPoint)
+        }
+      }
+    }
   }
 
   // Get current execution context for algorithms and handlers
@@ -72,6 +122,44 @@ export class ScenarioRunner {
     this.activeFlowId = null
     this.processedEventIds.clear()
     this.algorithmState.clear()
+    this.tokenEngine.reset()
+  }
+
+  // Compute path for a request flow using configured algorithms
+  private computePathForFlow(flowId: string): string[] {
+    const flow = this.scenario.requestFlows.find(f => f.id === flowId)
+    if (!flow) return []
+
+    const context = this.getContext()
+
+    // Get path selector - use algorithm if configured, otherwise static
+    let pathSelector: PathSelector | undefined
+
+    if (this.scenario.algorithms?.pathSelector) {
+      pathSelector = algorithmRegistry.getPathSelector(this.scenario.algorithms.pathSelector.type)
+    }
+
+    // Fall back to static path selector
+    if (!pathSelector) {
+      pathSelector = algorithmRegistry.getPathSelector('static')
+    }
+
+    return pathSelector?.computePath(flow, context) || flow.path || []
+  }
+
+  // Emit a token for a route-request event
+  private emitTokenForEvent(event: ScenarioEvent): void {
+    if (event.action !== 'route-request' || !event.flowId) return
+
+    const flow = this.scenario.requestFlows.find(f => f.id === event.flowId)
+    if (!flow) return
+
+    const path = this.computePathForFlow(event.flowId)
+    if (path.length < 2) return
+
+    // Determine token type based on scenario or default to http-request
+    const tokenTypeId = this.scenario.tokenFlowConfig?.tokenTypes?.[0]?.id || 'http-request'
+    this.tokenEngine.emit(tokenTypeId, path, event.timestampMs)
   }
 
   // Seek to a specific time, rebuilding state from scratch
@@ -106,6 +194,8 @@ export class ScenarioRunner {
       // Track the last route-request for edge highlighting
       if (event.action === 'route-request') {
         lastRouteResult = result
+        // Emit token for route-request
+        this.emitTokenForEvent(event)
       }
 
       this.processedEventIds.add(event.id)
@@ -116,6 +206,9 @@ export class ScenarioRunner {
       this.animatingEdges = lastRouteResult.edgeHighlights
       this.activeFlowId = lastRouteResult.activeFlowId
     }
+
+    // Advance token engine to current time
+    this.tokenEngine.advanceTo(timeMs)
 
     return this.getSnapshot()
   }
@@ -137,7 +230,15 @@ export class ScenarioRunner {
       const result = processEvent(event, context)
       this.applyResult(result)
       this.processedEventIds.add(event.id)
+
+      // Emit token for route-request events
+      if (event.action === 'route-request') {
+        this.emitTokenForEvent(event)
+      }
     }
+
+    // Advance token engine
+    this.tokenEngine.advanceTo(timeMs)
 
     return this.getSnapshot()
   }
@@ -149,7 +250,9 @@ export class ScenarioRunner {
       nodeStates: new Map(this.nodeStates),
       animatingEdges: new Set(this.animatingEdges),
       activeFlowId: this.activeFlowId,
-      processedEventIds: new Set(this.processedEventIds)
+      processedEventIds: new Set(this.processedEventIds),
+      tokens: this.tokenEngine.getTokens(),
+      waitPoints: this.tokenEngine.getWaitPoints()
     }
   }
 

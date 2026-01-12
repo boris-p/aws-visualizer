@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import DataDrivenGraph from '@/components/aws/DataDrivenGraph'
 import NodeTypeFilter from '@/components/aws/NodeTypeFilter'
 import Navigation from '@/components/Navigation'
@@ -13,6 +14,10 @@ import { getAvailableNodeTypes } from '@/utils/graphFilters'
 // Import graph definitions
 import awsGlobalInfrastructure from '@/data/graphs/aws-global-infrastructure.json'
 import ec2ScenarioPlayground from '@/data/graphs/ec2-scenario-playground.json'
+import ec2ScenarioPlaygroundDetailed from '@/data/graphs/ec2-scenario-playground-detailed.json'
+
+// Import scenarios
+import { scenarios as allScenariosData } from '@/data/scenarios'
 
 export default function AWSVisualizerPage() {
   // URL state for graph and scenario selection
@@ -77,25 +82,28 @@ export default function AWSVisualizerPage() {
     return availableScenarios.find(s => s.id === selectedScenarioId) || null
   }, [availableScenarios, selectedScenarioId, selectedGraphId])
 
-  // Scenario player hook
+  // Scenario player hook - pass graph topology for token path computation
   const {
     isPlaying,
     isPaused,
     currentTimeMs,
     nodeStates,
     animatingEdges,
+    tokens,
+    waitPoints,
     play,
     pause,
     reset,
     seek,
     toggleNodeState
-  } = useScenarioPlayer(selectedScenario)
+  } = useScenarioPlayer(selectedScenario, selectedGraph || undefined)
 
   // Load graphs on mount
   useEffect(() => {
     const loadedGraphs: GraphDefinition[] = [
       awsGlobalInfrastructure as GraphDefinition,
-      ec2ScenarioPlayground as GraphDefinition
+      ec2ScenarioPlayground as GraphDefinition,
+      ec2ScenarioPlaygroundDetailed as GraphDefinition
     ]
     setGraphs(loadedGraphs)
 
@@ -110,9 +118,7 @@ export default function AWSVisualizerPage() {
 
   // Load scenarios on mount
   useEffect(() => {
-    import('@/data/scenarios/sample-playbooks.json').then(data => {
-      setAllScenarios(data.scenarios)
-    })
+    setAllScenarios(allScenariosData)
   }, [])
 
   // Initialize node type filter when graph changes
@@ -134,6 +140,9 @@ export default function AWSVisualizerPage() {
       return next
     })
   }
+
+  // Graph description minimized state
+  const [isDescriptionMinimized, setIsDescriptionMinimized] = useState(false)
 
   return (
     <div className="min-h-screen bg-[#fafafa] text-[#1a1a1a] font-mono">
@@ -193,6 +202,9 @@ export default function AWSVisualizerPage() {
             animatingEdges={animatingEdges}
             onNodeStateToggle={toggleNodeState}
             visibleNodeTypes={visibleNodeTypes}
+            tokens={tokens}
+            waitPoints={waitPoints}
+            currentTimeMs={currentTimeMs}
           />
         ) : (
           <div className="flex items-center justify-center h-full text-[#999] text-sm">
@@ -200,17 +212,66 @@ export default function AWSVisualizerPage() {
           </div>
         )}
 
-        {/* Graph description overlay - only show when no scenario selected */}
-        {selectedGraph && !selectedScenario && (
-          <div className="absolute bottom-4 left-4 bg-white border border-[#e5e5e5] rounded p-3 max-w-md font-mono text-xs shadow-lg">
-            <div className="font-semibold mb-1">{selectedGraph.name}</div>
-            <div className="text-[#666]">{selectedGraph.description}</div>
-            {availableScenarios.length > 0 && (
-              <div className="text-[#888] text-[10px] mt-2">
-                {availableScenarios.length} scenario{availableScenarios.length !== 1 ? 's' : ''} available
-              </div>
+        {/* Graph description overlay */}
+        {selectedGraph && (
+          <AnimatePresence mode="wait">
+            {isDescriptionMinimized ? (
+              <motion.button
+                key="minimized"
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                transition={{ duration: 0.2 }}
+                onClick={() => setIsDescriptionMinimized(false)}
+                className="absolute top-4 left-4 bg-white border border-[#e5e5e5] rounded-full p-3 shadow-lg hover:shadow-xl hover:border-[#999] transition-all group"
+                title="Show graph info"
+              >
+                <svg
+                  className="w-5 h-5 text-[#666] group-hover:text-[#333]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </motion.button>
+            ) : (
+              <motion.div
+                key="expanded"
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.2 }}
+                className="absolute top-4 left-4 bg-white border border-[#e5e5e5] rounded p-3 max-w-md font-mono text-xs shadow-lg"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex-1">
+                    <div className="font-semibold mb-1">{selectedGraph.name}</div>
+                    <div className="text-[#666]">{selectedGraph.description}</div>
+                    {selectedScenario ? (
+                      <div className="text-[#888] text-[10px] mt-2 border-t border-[#e5e5e5] pt-2">
+                        <div className="font-semibold text-[#666]">Scenario: {selectedScenario.name}</div>
+                        <div className="mt-1">{selectedScenario.description}</div>
+                      </div>
+                    ) : availableScenarios.length > 0 && (
+                      <div className="text-[#888] text-[10px] mt-2">
+                        {availableScenarios.length} scenario{availableScenarios.length !== 1 ? 's' : ''} available
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setIsDescriptionMinimized(true)}
+                    className="text-[#999] hover:text-[#333] transition-colors p-1"
+                    title="Minimize"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                    </svg>
+                  </button>
+                </div>
+              </motion.div>
             )}
-          </div>
+          </AnimatePresence>
         )}
 
         {/* Scenario player at bottom-center */}

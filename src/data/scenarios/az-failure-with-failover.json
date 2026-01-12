@@ -1,0 +1,90 @@
+{
+  "id": "az-failure-with-failover",
+  "name": "AZ Failure with Automatic Failover",
+  "description": "Multi-AZ deployment handles AZ failure gracefully",
+  "graphId": "ec2-scenario-playground",
+  "infrastructureId": "multi-az-redundant",
+  "durationMs": 7500,
+  "events": [
+    {
+      "id": "initial-traffic",
+      "timestampMs": 500,
+      "action": "route-request",
+      "targetType": "service",
+      "targetId": "web-service-ha",
+      "flowId": "req-before-failure"
+    },
+    {
+      "id": "az1-fails",
+      "timestampMs": 2500,
+      "action": "fail",
+      "targetType": "az",
+      "targetId": "az-us-east-1-use1-az1",
+      "failureType": "az-outage",
+      "severity": "high",
+      "failureMessage": "AZ Unavailable"
+    },
+    {
+      "id": "traffic-rerouted",
+      "timestampMs": 3000,
+      "action": "route-request",
+      "targetType": "service",
+      "targetId": "web-service-ha",
+      "flowId": "req-during-failure"
+    },
+    {
+      "id": "az1-recovers",
+      "timestampMs": 5000,
+      "action": "recover",
+      "targetType": "az",
+      "targetId": "az-us-east-1-use1-az1"
+    },
+    {
+      "id": "traffic-rebalanced",
+      "timestampMs": 5500,
+      "action": "route-request",
+      "targetType": "service",
+      "targetId": "web-service-ha",
+      "flowId": "req-after-recovery"
+    }
+  ],
+  "requestFlows": [
+    {
+      "id": "req-before-failure",
+      "sourceLocation": "User (San Francisco)",
+      "targetServiceId": "web-service-ha",
+      "path": ["edge-sfo", "region-us-east-1", "az-us-east-1-use1-az1", "dc-us-east-1-use1-az1-1"],
+      "latencyMs": 900,
+      "status": "success",
+      "routingStrategy": "cloudfront",
+      "visualState": "primary"
+    },
+    {
+      "id": "req-during-failure",
+      "sourceLocation": "User (San Francisco)",
+      "targetServiceId": "web-service-ha",
+      "path": ["edge-sfo", "region-us-east-1", "az-us-east-1-use1-az2", "dc-us-east-1-use1-az2-1"],
+      "latencyMs": 950,
+      "status": "success",
+      "routingStrategy": "cloudfront",
+      "visualState": "failover"
+    },
+    {
+      "id": "req-after-recovery",
+      "sourceLocation": "User (San Francisco)",
+      "targetServiceId": "web-service-ha",
+      "path": ["edge-sfo", "region-us-east-1", "az-us-east-1-use1-az1", "dc-us-east-1-use1-az1-1"],
+      "latencyMs": 900,
+      "status": "success",
+      "routingStrategy": "cloudfront",
+      "visualState": "primary"
+    }
+  ],
+  "expectedOutcome": "Traffic automatically reroutes to healthy AZ, then rebalances after recovery",
+  "awsContext": {
+    "useCloudFront": true,
+    "useMultiAz": true,
+    "useAutoScaling": false,
+    "healthCheckEnabled": true
+  }
+}

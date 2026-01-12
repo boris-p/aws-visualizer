@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import type { Scenario } from '@/types/scenario'
 import type { NodeState } from '@/types/graph'
 import type { GraphDefinition } from '@/types/graph-type'
+import type { Token, WaitPointState } from '@/types/token'
 import { ScenarioRunner } from '@/lib/scenario-engine'
 
 interface ScenarioPlayerState {
@@ -12,6 +13,8 @@ interface ScenarioPlayerState {
   nodeStates: Map<string, NodeState>
   animatingEdges: Set<string>
   activeFlowId: string | null
+  tokens: Token[]
+  waitPoints: Map<string, WaitPointState>
 }
 
 export function useScenarioPlayer(scenario: Scenario | null, graphTopology?: GraphDefinition) {
@@ -22,7 +25,9 @@ export function useScenarioPlayer(scenario: Scenario | null, graphTopology?: Gra
     currentStepIndex: 0,
     nodeStates: new Map(),
     animatingEdges: new Set(),
-    activeFlowId: null
+    activeFlowId: null,
+    tokens: [],
+    waitPoints: new Map()
   })
 
   const animationFrameRef = useRef<number>()
@@ -46,7 +51,9 @@ export function useScenarioPlayer(scenario: Scenario | null, graphTopology?: Gra
         currentStepIndex: 0,
         nodeStates: new Map(),
         animatingEdges: new Set(),
-        activeFlowId: null
+        activeFlowId: null,
+        tokens: [],
+        waitPoints: new Map()
       })
     } else {
       runnerRef.current = null
@@ -83,7 +90,9 @@ export function useScenarioPlayer(scenario: Scenario | null, graphTopology?: Gra
       currentStepIndex: 0,
       nodeStates: new Map(),
       animatingEdges: new Set(),
-      activeFlowId: null
+      activeFlowId: null,
+      tokens: [],
+      waitPoints: new Map()
     })
 
     if (animationFrameRef.current) {
@@ -115,7 +124,9 @@ export function useScenarioPlayer(scenario: Scenario | null, graphTopology?: Gra
           nodeStates: snapshot.nodeStates,
           animatingEdges: snapshot.animatingEdges,
           activeFlowId: snapshot.activeFlowId,
-          currentStepIndex: snapshot.processedEventIds.size
+          currentStepIndex: snapshot.processedEventIds.size,
+          tokens: snapshot.tokens,
+          waitPoints: snapshot.waitPoints
         }))
         return
       }
@@ -130,7 +141,9 @@ export function useScenarioPlayer(scenario: Scenario | null, graphTopology?: Gra
         nodeStates: snapshot.nodeStates,
         animatingEdges: snapshot.animatingEdges,
         activeFlowId: snapshot.activeFlowId,
-        currentStepIndex: snapshot.processedEventIds.size
+        currentStepIndex: snapshot.processedEventIds.size,
+        tokens: snapshot.tokens,
+        waitPoints: snapshot.waitPoints
       }))
 
       animationFrameRef.current = requestAnimationFrame(animate)
@@ -165,7 +178,9 @@ export function useScenarioPlayer(scenario: Scenario | null, graphTopology?: Gra
       nodeStates: snapshot.nodeStates,
       animatingEdges: snapshot.animatingEdges,
       activeFlowId: snapshot.activeFlowId,
-      currentStepIndex: snapshot.processedEventIds.size
+      currentStepIndex: snapshot.processedEventIds.size,
+      tokens: snapshot.tokens,
+      waitPoints: snapshot.waitPoints
     }))
 
     lastTimestampRef.current = performance.now()

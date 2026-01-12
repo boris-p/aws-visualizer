@@ -1,0 +1,35 @@
+{
+  "id": "basic-request-flow",
+  "name": "Basic Request Flow",
+  "description": "Shows a normal request path with no failures",
+  "graphId": "ec2-scenario-playground",
+  "infrastructureId": "simple-single-az",
+  "durationMs": 2500,
+  "events": [
+    {
+      "id": "initial-request",
+      "timestampMs": 250,
+      "action": "route-request",
+      "targetType": "service",
+      "targetId": "web-service-1"
+    }
+  ],
+  "requestFlows": [
+    {
+      "id": "req-1",
+      "sourceLocation": "User (San Francisco)",
+      "targetServiceId": "web-service-1",
+      "path": ["edge-sfo", "region-us-east-1", "az-us-east-1-use1-az1", "dc-us-east-1-use1-az1-1"],
+      "latencyMs": 1200,
+      "status": "success",
+      "routingStrategy": "cloudfront"
+    }
+  ],
+  "expectedOutcome": "Request successfully reaches the server",
+  "awsContext": {
+    "useCloudFront": true,
+    "useMultiAz": false,
+    "useAutoScaling": false,
+    "healthCheckEnabled": false
+  }
+}
