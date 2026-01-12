@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { useState, useEffect, useMemo, useCallback } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import DataDrivenGraph from '@/components/aws/DataDrivenGraph'
 import NodeTypeFilter from '@/components/aws/NodeTypeFilter'
 import Navigation from '@/components/Navigation'
@@ -15,10 +15,44 @@ import awsGlobalInfrastructure from '@/data/graphs/aws-global-infrastructure.jso
 import ec2ScenarioPlayground from '@/data/graphs/ec2-scenario-playground.json'
 
 export default function AWSVisualizerPage() {
+  // URL state for graph and scenario selection
+  const [searchParams, setSearchParams] = useSearchParams()
+  const selectedGraphId = searchParams.get('graph')
+  const selectedScenarioId = searchParams.get('scenario')
+
+  // URL update helpers
+  const setSelectedGraphId = useCallback((graphId: string | null) => {
+    setSearchParams(prev => {
+      if (graphId) {
+        prev.set('graph', graphId)
+      } else {
+        prev.delete('graph')
+      }
+      // Clear scenario when graph changes (different graphs have different scenarios)
+      prev.delete('scenario')
+      return prev
+    }, { replace: true })
+  }, [setSearchParams])
+
+  const setSelectedScenarioId = useCallback((scenarioId: string | null) => {
+    setSearchParams(prev => {
+      if (scenarioId) {
+        prev.set('scenario', scenarioId)
+      } else {
+        prev.delete('scenario')
+      }
+      return prev
+    }, { replace: true })
+  }, [setSearchParams])
+
   // Graph state
   const [graphs, setGraphs] = useState<GraphDefinition[]>([])
-  const [selectedGraphId, setSelectedGraphId] = useState<string | null>(null)
-  const selectedGraph = graphs.find(g => g.id === selectedGraphId) || null
+
+  // Derive selected graph with validation
+  const selectedGraph = useMemo(() => {
+    if (!selectedGraphId) return null
+    return graphs.find(g => g.id === selectedGraphId) || null
+  }, [graphs, selectedGraphId])
 
   // Node type filtering state
   const [visibleNodeTypes, setVisibleNodeTypes] = useState<Set<string>>(new Set())
@@ -31,14 +65,17 @@ export default function AWSVisualizerPage() {
 
   // Scenario state
   const [allScenarios, setAllScenarios] = useState<Scenario[]>([])
-  const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null)
 
   // Filter scenarios by selected graph
   const availableScenarios = selectedGraphId
     ? allScenarios.filter(s => s.graphId === selectedGraphId)
     : []
 
-  const selectedScenario = availableScenarios.find(s => s.id === selectedScenarioId) || null
+  // Derive selected scenario with validation
+  const selectedScenario = useMemo(() => {
+    if (!selectedScenarioId || !selectedGraphId) return null
+    return availableScenarios.find(s => s.id === selectedScenarioId) || null
+  }, [availableScenarios, selectedScenarioId, selectedGraphId])
 
   // Scenario player hook
   const {
@@ -61,11 +98,15 @@ export default function AWSVisualizerPage() {
       ec2ScenarioPlayground as GraphDefinition
     ]
     setGraphs(loadedGraphs)
-    // Auto-select first graph
-    if (loadedGraphs.length > 0) {
-      setSelectedGraphId(loadedGraphs[0].id)
+
+    // Only set default if no graph param in URL
+    if (!searchParams.get('graph') && loadedGraphs.length > 0) {
+      setSearchParams(prev => {
+        prev.set('graph', loadedGraphs[0].id)
+        return prev
+      }, { replace: true })
     }
-  }, [])
+  }, [searchParams, setSearchParams])
 
   // Load scenarios on mount
   useEffect(() => {
@@ -74,14 +115,12 @@ export default function AWSVisualizerPage() {
     })
   }, [])
 
-  // Reset scenario selection and initialize node type filter when graph changes
+  // Initialize node type filter when graph changes
   useEffect(() => {
-    setSelectedScenarioId(null)
-    // Initialize all node types as visible for new graph
     if (selectedGraph) {
       setVisibleNodeTypes(getAvailableNodeTypes(selectedGraph))
     }
-  }, [selectedGraphId, selectedGraph])
+  }, [selectedGraph])
 
   // Toggle node type visibility
   const toggleNodeType = (type: string) => {
