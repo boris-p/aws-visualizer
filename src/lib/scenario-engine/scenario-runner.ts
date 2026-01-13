@@ -4,20 +4,17 @@ import type { GraphDefinition } from '@/types/graph-type'
 import type {
   ScenarioExecutionContext,
   ScenarioSnapshot,
-  EventResult,
-  PathSelector
+  EventResult
 } from '@/types/scenario-engine'
-import type { TokenFlowConfig, WaitPoint } from '@/types/token'
+import type { WaitPoint } from '@/types/token'
 import { processEvent } from './event-handlers'
 import { TokenEngine } from './token-engine'
-import { algorithmRegistry } from '@/lib/algorithm-registry'
 
 export class ScenarioRunner {
   private scenario: Scenario
   private graphTopology: GraphDefinition
   private currentTimeMs: number = 0
   private nodeStates: Map<string, NodeState> = new Map()
-  private animatingEdges: Set<string> = new Set()
   private activeFlowId: string | null = null
   private processedEventIds: Set<string> = new Set()
   private algorithmState: Map<string, unknown> = new Map()
@@ -25,7 +22,7 @@ export class ScenarioRunner {
 
   constructor(scenario: Scenario, graphTopology?: GraphDefinition) {
     this.scenario = scenario
-    this.graphTopology = graphTopology || { nodes: [], edges: [] }
+    this.graphTopology = graphTopology || { id: '', name: '', description: '', nodes: [], edges: [] }
     this.initializeTokenEngine()
   }
 
@@ -98,8 +95,9 @@ export class ScenarioRunner {
       } as NodeState)
     }
 
-    // Update edge highlights
-    this.animatingEdges = result.edgeHighlights
+    // Note: We no longer store animatingEdges from events
+    // Edge highlighting is now derived from active tokens in getSnapshot()
+    // This ensures edges and tokens are always in sync by definition
 
     // Update active flow
     if (result.activeFlowId) {
@@ -118,48 +116,21 @@ export class ScenarioRunner {
   reset(): void {
     this.currentTimeMs = 0
     this.nodeStates.clear()
-    this.animatingEdges.clear()
     this.activeFlowId = null
     this.processedEventIds.clear()
     this.algorithmState.clear()
     this.tokenEngine.reset()
   }
 
-  // Compute path for a request flow using configured algorithms
-  private computePathForFlow(flowId: string): string[] {
-    const flow = this.scenario.requestFlows.find(f => f.id === flowId)
-    if (!flow) return []
-
-    const context = this.getContext()
-
-    // Get path selector - use algorithm if configured, otherwise static
-    let pathSelector: PathSelector | undefined
-
-    if (this.scenario.algorithms?.pathSelector) {
-      pathSelector = algorithmRegistry.getPathSelector(this.scenario.algorithms.pathSelector.type)
-    }
-
-    // Fall back to static path selector
-    if (!pathSelector) {
-      pathSelector = algorithmRegistry.getPathSelector('static')
-    }
-
-    return pathSelector?.computePath(flow, context) || flow.path || []
-  }
-
-  // Emit a token for a route-request event
-  private emitTokenForEvent(event: ScenarioEvent): void {
-    if (event.action !== 'route-request' || !event.flowId) return
-
-    const flow = this.scenario.requestFlows.find(f => f.id === event.flowId)
-    if (!flow) return
-
-    const path = this.computePathForFlow(event.flowId)
+  // Emit a token for a route-request event using a pre-computed path
+  private emitTokenForEvent(event: ScenarioEvent, path: string[]): void {
+    if (event.action !== 'route-request') return
     if (path.length < 2) return
 
     // Determine token type based on scenario or default to http-request
     const tokenTypeId = this.scenario.tokenFlowConfig?.tokenTypes?.[0]?.id || 'http-request'
-    this.tokenEngine.emit(tokenTypeId, path, event.timestampMs)
+    const token = this.tokenEngine.emit(tokenTypeId, path, event.timestampMs)
+    console.log(`[ScenarioRunner] Emitted token ${token.id} for event ${event.id} with path: [${path.join(' -> ')}]`)
   }
 
   // Seek to a specific time, rebuilding state from scratch
@@ -172,9 +143,6 @@ export class ScenarioRunner {
     const events = this.getEventsUpTo(timeMs)
 
     // Process events in order
-    // Track the most recent route-request separately for edge highlighting
-    let lastRouteResult: EventResult | null = null
-
     for (const event of events) {
       const context = this.getContext()
       const result = processEvent(event, context)
@@ -191,51 +159,67 @@ export class ScenarioRunner {
         } as NodeState)
       }
 
-      // Track the last route-request for edge highlighting
+      // Emit token for route-request events
       if (event.action === 'route-request') {
-        lastRouteResult = result
-        // Emit token for route-request
-        this.emitTokenForEvent(event)
+        if (result.computedPath && result.computedPath.length >= 2) {
+          this.emitTokenForEvent(event, result.computedPath)
+        }
+        if (result.activeFlowId) {
+          this.activeFlowId = result.activeFlowId
+        }
       }
 
       this.processedEventIds.add(event.id)
     }
 
-    // Apply edge highlights from the last route-request
-    if (lastRouteResult) {
-      this.animatingEdges = lastRouteResult.edgeHighlights
-      this.activeFlowId = lastRouteResult.activeFlowId
-    }
+    // Update token engine with current node states before advancing
+    this.tokenEngine.setNodeStates(this.nodeStates)
 
     // Advance token engine to current time
     this.tokenEngine.advanceTo(timeMs)
 
+    // Edge highlighting is derived from tokens in getSnapshot()
     return this.getSnapshot()
   }
 
   // Advance time incrementally (for animation loop)
   advanceTo(timeMs: number): ScenarioSnapshot {
     // Find new events since last time
-    const newEvents = this.scenario.events.filter(e =>
-      e.timestampMs > this.currentTimeMs &&
-      e.timestampMs <= timeMs &&
-      !this.processedEventIds.has(e.id)
-    )
+    const newEvents = this.scenario.events
+      .filter(e =>
+        e.timestampMs > this.currentTimeMs &&
+        e.timestampMs <= timeMs &&
+        !this.processedEventIds.has(e.id)
+      )
+      .sort((a, b) => a.timestampMs - b.timestampMs) // Sort by timestamp to ensure correct order
+
+    if (newEvents.length > 0) {
+      console.log(`[ScenarioRunner] advanceTo(${timeMs}): processing ${newEvents.length} new events`)
+    }
 
     this.currentTimeMs = timeMs
 
     // Process new events
     for (const event of newEvents) {
+      console.log(`[ScenarioRunner] Processing event: ${event.id} (action=${event.action}, timestampMs=${event.timestampMs})`)
       const context = this.getContext()
       const result = processEvent(event, context)
       this.applyResult(result)
       this.processedEventIds.add(event.id)
 
-      // Emit token for route-request events
-      if (event.action === 'route-request') {
-        this.emitTokenForEvent(event)
+      // Log node states after applying result
+      console.log(`[ScenarioRunner] After applying result, nodeStates:`,
+        Array.from(this.nodeStates.entries()).map(([k, v]) => `${k}=${v.status}`).join(', '))
+
+      // Emit token for route-request events using the same computed path
+      if (event.action === 'route-request' && result.computedPath && result.computedPath.length >= 2) {
+        this.emitTokenForEvent(event, result.computedPath)
       }
     }
+
+    // Update token engine with current node states before advancing
+    // This allows tokens to fail when they try to enter unavailable nodes
+    this.tokenEngine.setNodeStates(this.nodeStates)
 
     // Advance token engine
     this.tokenEngine.advanceTo(timeMs)
@@ -243,12 +227,44 @@ export class ScenarioRunner {
     return this.getSnapshot()
   }
 
+  // Compute active edges from tokens - ensures edges and tokens are always in sync
+  private computeActiveEdgesFromTokens(): Set<string> {
+    const activeEdges = new Set<string>()
+    const tokens = this.tokenEngine.getTokens()
+
+    for (const token of tokens) {
+      if (token.status === 'traveling') {
+        // Token is currently on an edge
+        const sourceNode = token.path[token.currentEdgeIndex]
+        const targetNode = token.path[token.currentEdgeIndex + 1]
+        if (sourceNode && targetNode) {
+          activeEdges.add(`${sourceNode}-${targetNode}`)
+        }
+      } else if (token.status === 'waiting') {
+        // Token is waiting at a node - highlight edges leading TO that node
+        // This shows where the token came from
+        if (token.currentEdgeIndex > 0) {
+          const prevSource = token.path[token.currentEdgeIndex - 1]
+          const prevTarget = token.path[token.currentEdgeIndex]
+          if (prevSource && prevTarget) {
+            activeEdges.add(`${prevSource}-${prevTarget}`)
+          }
+        }
+      }
+    }
+
+    return activeEdges
+  }
+
   // Get current snapshot
   getSnapshot(): ScenarioSnapshot {
+    // Derive active edges from tokens - this ensures they're always in sync
+    const activeEdges = this.computeActiveEdgesFromTokens()
+
     return {
       timeMs: this.currentTimeMs,
       nodeStates: new Map(this.nodeStates),
-      animatingEdges: new Set(this.animatingEdges),
+      animatingEdges: activeEdges, // Use token-derived edges, not event-based
       activeFlowId: this.activeFlowId,
       processedEventIds: new Set(this.processedEventIds),
       tokens: this.tokenEngine.getTokens(),
@@ -259,10 +275,6 @@ export class ScenarioRunner {
   // Convenience getters
   getNodeState(nodeId: string): NodeState | undefined {
     return this.nodeStates.get(nodeId)
-  }
-
-  getAnimatingEdges(): Set<string> {
-    return new Set(this.animatingEdges)
   }
 
   getActiveFlowId(): string | null {

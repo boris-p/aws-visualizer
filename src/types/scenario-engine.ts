@@ -18,6 +18,7 @@ export interface EventResult {
   edgeHighlights: Set<string>
   activeFlowId: string | null
   derivedEvents?: ScenarioEvent[] // Events to emit (for cascading effects)
+  computedPath?: string[] // The path computed for route-request events (for token visualization)
 }
 
 // Event handler interface

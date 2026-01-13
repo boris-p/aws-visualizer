@@ -54,6 +54,8 @@ export const healthiestPathSelector: PathSelector = {
   computePath(flow: RequestFlow, context: ScenarioExecutionContext): string[] {
     const { scenario } = context
 
+    console.log(`[PathSelector] healthiest: computing path for flow=${flow.id}`)
+
     // Get load balancer if configured
     const loadBalancer = scenario.algorithms?.loadBalancer
       ? algorithmRegistry.getLoadBalancer(scenario.algorithms.loadBalancer.type)
@@ -61,21 +63,27 @@ export const healthiestPathSelector: PathSelector = {
 
     // If we have path constraints with candidates, use load balancer
     const candidates = flow.pathConstraints?.candidates
+    console.log(`[PathSelector] candidates=${candidates?.join(', ') || 'none'}, loadBalancer=${loadBalancer?.id || 'none'}`)
+
     if (loadBalancer && candidates && candidates.length > 0) {
       const selectedNode = loadBalancer.selectNode(candidates, context)
       const basePath = flow.path || []
+
+      console.log(`[PathSelector] loadBalancer selected: ${selectedNode}`)
 
       // Check if any candidate is already in the path (replace mode)
       const hasCandidate = basePath.some(nodeId => candidates.includes(nodeId))
 
       if (hasCandidate) {
         // Replace mode: swap candidate nodes with selected
-        return basePath.map(nodeId => {
+        const result = basePath.map(nodeId => {
           if (candidates.includes(nodeId)) {
             return selectedNode
           }
           return nodeId
         })
+        console.log(`[PathSelector] Replace mode result: [${result.join(' -> ')}]`)
+        return result
       } else {
         // Append mode: path ends before candidates (e.g., at ALB)
         // Append the selected node and find a downstream DC
@@ -83,6 +91,8 @@ export const healthiestPathSelector: PathSelector = {
 
         // Find DCs within the selected AZ
         const downstreamNodes = findDownstreamNodes(selectedNode, context)
+        console.log(`[PathSelector] Downstream nodes from ${selectedNode}: [${downstreamNodes.join(', ')}]`)
+
         if (downstreamNodes.length > 0) {
           // Pick first healthy DC, or first one if all unhealthy
           const healthyDc = downstreamNodes.find(nodeId => {
@@ -92,11 +102,13 @@ export const healthiestPathSelector: PathSelector = {
           fullPath.push(healthyDc || downstreamNodes[0])
         }
 
+        console.log(`[PathSelector] Append mode result: [${fullPath.join(' -> ')}]`)
         return fullPath
       }
     }
 
     // Fall back to static path logic
+    console.log(`[PathSelector] Falling back to static path selector`)
     return staticPathSelector.computePath(flow, context)
   }
 }

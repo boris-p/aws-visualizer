@@ -1,0 +1,70 @@
+{
+  "id": "az-failure-failover-detailed",
+  "name": "AZ Failure with Automatic Failover",
+  "description": "Traffic flows normally, AZ1 fails, in-flight requests fail, new requests route to AZ2, then AZ1 recovers",
+  "graphId": "ec2-scenario-playground-detailed",
+  "infrastructureId": "multi-az-alb",
+  "durationMs": 30000,
+  "tokenFlowConfig": {
+    "defaultEdgeDurationMs": 1500,
+    "tokenTypes": [
+      { "id": "http-request", "shape": "circle", "color": "#3b82f6", "size": 8 }
+    ],
+    "waitPoints": [
+      {
+        "nodeId": "alb-main",
+        "type": "queue",
+        "processIntervalMs": 800,
+        "strategy": "fifo"
+      }
+    ]
+  },
+  "algorithms": {
+    "pathSelector": { "type": "healthiest" },
+    "loadBalancer": { "type": "round-robin" }
+  },
+  "events": [
+    { "id": "req-1", "timestampMs": 500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "req-2", "timestampMs": 1500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "req-3", "timestampMs": 2500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "req-4", "timestampMs": 3500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+
+    { "id": "az1-fails", "timestampMs": 6000, "action": "fail", "targetType": "az", "targetId": "az-us-east-1-use1-az1", "failureMessage": "AZ Unavailable" },
+
+    { "id": "req-5", "timestampMs": 7000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "req-6", "timestampMs": 8000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "req-7", "timestampMs": 9000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "req-8", "timestampMs": 10000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "req-9", "timestampMs": 11000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "req-10", "timestampMs": 12000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+
+    { "id": "az1-recovers", "timestampMs": 18000, "action": "recover", "targetType": "az", "targetId": "az-us-east-1-use1-az1" },
+
+    { "id": "req-11", "timestampMs": 19000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "req-12", "timestampMs": 20000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "req-13", "timestampMs": 21000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "req-14", "timestampMs": 22000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" }
+  ],
+  "requestFlows": [
+    {
+      "id": "normal-request",
+      "sourceLocation": "User (San Francisco)",
+      "targetServiceId": "web-service",
+      "path": ["edge-sfo", "region-us-east-1", "alb-main"],
+      "latencyMs": 100,
+      "status": "success",
+      "routingStrategy": "cloudfront",
+      "pathConstraints": {
+        "candidates": ["az-us-east-1-use1-az1", "az-us-east-1-use1-az2"]
+      },
+      "queueAtNodes": ["alb-main"]
+    }
+  ],
+  "expectedOutcome": "Before failure: round-robin between AZs. During failure: all traffic to AZ2. After recovery: round-robin resumes.",
+  "awsContext": {
+    "useCloudFront": true,
+    "useMultiAz": true,
+    "useAutoScaling": false,
+    "healthCheckEnabled": true
+  }
+}

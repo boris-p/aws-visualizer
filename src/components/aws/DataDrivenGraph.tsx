@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef, useMemo } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import {
   ReactFlow,
   type Node,
@@ -13,7 +13,7 @@ import "@xyflow/react/dist/style.css";
 import "@/styles/scenario-animations.css";
 import type { NodeState } from "@/types/graph";
 import type { GraphDefinition } from "@/types/graph-type";
-import type { Token, WaitPointState } from "@/types/token";
+import type { Token } from "@/types/token";
 import { filterGraphByNodeTypes } from "@/utils/graphFilters";
 import TokenFlowEdge from "@/components/graph/TokenFlowEdge";
 
@@ -29,7 +29,6 @@ interface DataDrivenGraphProps {
   animatingEdges?: Set<string>
   visibleNodeTypes?: Set<string>
   tokens?: Token[]
-  waitPoints?: Map<string, WaitPointState>
   currentTimeMs?: number
 }
 
@@ -40,7 +39,6 @@ export default function DataDrivenGraph({
   animatingEdges,
   visibleNodeTypes,
   tokens = [],
-  waitPoints,
   currentTimeMs = 0,
 }: DataDrivenGraphProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
@@ -173,7 +171,7 @@ export default function DataDrivenGraph({
   }, [animatingEdges, tokens, currentTimeMs, setEdges])
 
   // Handle node click for interactive nodes
-  const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
+  const onNodeClick = useCallback((_event: React.MouseEvent, node: Node) => {
     if (node.data.isInteractive && onNodeStateToggle) {
       const currentState = nodeStates?.get(node.id)?.status || 'available'
       const newState = currentState === 'available' ? 'unavailable' : 'available'

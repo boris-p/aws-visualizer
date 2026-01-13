@@ -10,16 +10,23 @@ export const roundRobinLoadBalancer: LoadBalancer = {
     // Filter to healthy candidates only
     const healthyCandidates = candidates.filter(id => {
       const nodeState = context.nodeStates.get(id)
-      return !nodeState || nodeState.status !== 'unavailable'
+      const isHealthy = !nodeState || nodeState.status !== 'unavailable'
+      console.log(`[LoadBalancer] Candidate ${id}: nodeState=${nodeState?.status || 'none'}, isHealthy=${isHealthy}`)
+      return isHealthy
     })
+
+    console.log(`[LoadBalancer] Healthy candidates: [${healthyCandidates.join(', ')}] (${healthyCandidates.length}/${candidates.length})`)
 
     if (healthyCandidates.length === 0) {
       // Fallback to first candidate if all are unavailable
+      console.log(`[LoadBalancer] All candidates unavailable, falling back to ${candidates[0]}`)
       return candidates[0]
     }
 
     // Select next node in round-robin order
     const selected = healthyCandidates[state.index % healthyCandidates.length]
+
+    console.log(`[LoadBalancer] Round-robin index=${state.index}, selected=${selected}`)
 
     // Update state for next call
     context.algorithmState.set('round-robin', { index: state.index + 1 })

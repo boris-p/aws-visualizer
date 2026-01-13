@@ -23,6 +23,8 @@ export const failEventHandler: EventHandler = {
   handle(event: ScenarioEvent, _context: ScenarioExecutionContext): EventResult {
     const result = createEmptyResult()
 
+    console.log(`[EventHandler] FAIL event: targetId=${event.targetId}, timestampMs=${event.timestampMs}`)
+
     result.nodeStateChanges.set(event.targetId, {
       id: event.targetId,
       status: 'unavailable',
@@ -81,12 +83,16 @@ export const routeRequestHandler: EventHandler = {
     const result = createEmptyResult()
     const { scenario } = context
 
+    console.log(`[EventHandler] ROUTE-REQUEST event: eventId=${event.id}, targetId=${event.targetId}, timestampMs=${event.timestampMs}`)
+    console.log(`[EventHandler] Current nodeStates:`, Array.from(context.nodeStates.entries()).map(([k, v]) => `${k}=${v.status}`).join(', '))
+
     // Find the flow - by explicit flowId or by matching targetId
     const flow = event.flowId
       ? scenario.requestFlows.find(f => f.id === event.flowId)
       : scenario.requestFlows.find(f => f.targetServiceId === event.targetId)
 
     if (!flow) {
+      console.log(`[EventHandler] No flow found for targetId=${event.targetId}`)
       return result
     }
 
@@ -97,15 +103,22 @@ export const routeRequestHandler: EventHandler = {
 
     if (scenario.algorithms?.pathSelector) {
       pathSelector = algorithmRegistry.getPathSelector(scenario.algorithms.pathSelector.type)
+      console.log(`[EventHandler] Using path selector: ${scenario.algorithms.pathSelector.type}`)
     }
 
     // Fall back to static path selector
     if (!pathSelector) {
       pathSelector = algorithmRegistry.getPathSelector('static')
+      console.log(`[EventHandler] Falling back to static path selector`)
     }
 
-    // Compute the path
+    // Compute the path (ONCE - reuse for both highlighting and tokens)
     const path = pathSelector?.computePath(flow, context) || flow.path || []
+
+    console.log(`[EventHandler] Computed path: [${path.join(' -> ')}]`)
+
+    // Store the computed path so tokens can use the same path
+    result.computedPath = path
 
     // Create edge highlights from path
     for (let i = 0; i < path.length - 1; i++) {

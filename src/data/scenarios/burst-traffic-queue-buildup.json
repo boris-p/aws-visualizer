@@ -1,0 +1,68 @@
+{
+  "id": "burst-traffic-queue-buildup",
+  "name": "Burst Traffic & Queue Buildup",
+  "description": "Rapid burst of requests causes visible queue buildup at the ALB, demonstrating backpressure",
+  "graphId": "ec2-scenario-playground-detailed",
+  "infrastructureId": "multi-az-alb",
+  "durationMs": 35000,
+  "tokenFlowConfig": {
+    "defaultEdgeDurationMs": 1500,
+    "tokenTypes": [
+      { "id": "http-request", "shape": "circle", "color": "#3b82f6", "size": 8 }
+    ],
+    "waitPoints": [
+      {
+        "nodeId": "alb-main",
+        "type": "queue",
+        "processIntervalMs": 1200,
+        "strategy": "fifo"
+      }
+    ]
+  },
+  "algorithms": {
+    "pathSelector": { "type": "healthiest" },
+    "loadBalancer": { "type": "round-robin" }
+  },
+  "events": [
+    { "id": "baseline-1", "timestampMs": 500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "baseline-2", "timestampMs": 2000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "baseline-3", "timestampMs": 3500, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+
+    { "id": "burst-1", "timestampMs": 6000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "burst-2", "timestampMs": 6200, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "burst-3", "timestampMs": 6400, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "burst-4", "timestampMs": 6600, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "burst-5", "timestampMs": 6800, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "burst-6", "timestampMs": 7000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "burst-7", "timestampMs": 7200, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "burst-8", "timestampMs": 7400, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "burst-9", "timestampMs": 7600, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "burst-10", "timestampMs": 7800, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+
+    { "id": "recovery-1", "timestampMs": 20000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "recovery-2", "timestampMs": 22000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" },
+    { "id": "recovery-3", "timestampMs": 24000, "action": "route-request", "targetType": "service", "targetId": "web-service", "flowId": "normal-request" }
+  ],
+  "requestFlows": [
+    {
+      "id": "normal-request",
+      "sourceLocation": "User (San Francisco)",
+      "targetServiceId": "web-service",
+      "path": ["edge-sfo", "region-us-east-1", "alb-main"],
+      "latencyMs": 100,
+      "status": "success",
+      "routingStrategy": "cloudfront",
+      "pathConstraints": {
+        "candidates": ["az-us-east-1-use1-az1", "az-us-east-1-use1-az2"]
+      },
+      "queueAtNodes": ["alb-main"]
+    }
+  ],
+  "expectedOutcome": "Normal traffic, then burst causes queue to grow at ALB (visible stacked tokens), then queue drains as traffic normalizes",
+  "awsContext": {
+    "useCloudFront": true,
+    "useMultiAz": true,
+    "useAutoScaling": false,
+    "healthCheckEnabled": true
+  }
+}

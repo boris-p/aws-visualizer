@@ -1,10 +1,10 @@
 import type {
   Token,
-  TokenStatus,
   TokenFlowConfig,
   WaitPoint,
   WaitPointState,
 } from '@/types/token'
+import type { NodeState } from '@/types/graph'
 import {
   DEFAULT_TOKEN_FLOW_CONFIG,
   getEdgeDuration,
@@ -16,11 +16,23 @@ export class TokenEngine {
   private waitPoints: Map<string, WaitPointState> = new Map()
   private config: TokenFlowConfig = DEFAULT_TOKEN_FLOW_CONFIG
   private nextTokenId: number = 0
+  private nodeStates: Map<string, NodeState> = new Map()
 
   constructor(config?: Partial<TokenFlowConfig>) {
     if (config) {
       this.config = { ...DEFAULT_TOKEN_FLOW_CONFIG, ...config }
     }
+  }
+
+  // Update node states (called by scenario runner)
+  setNodeStates(nodeStates: Map<string, NodeState>): void {
+    this.nodeStates = nodeStates
+  }
+
+  // Check if a node is unavailable
+  private isNodeUnavailable(nodeId: string): boolean {
+    const state = this.nodeStates.get(nodeId)
+    return state?.status === 'unavailable'
   }
 
   // Set configuration
@@ -109,6 +121,22 @@ export class TokenEngine {
 
     // Get the node we just arrived at
     const arrivedAtNode = token.path[nextEdgeIndex]
+
+    // Check if the next node in path is unavailable - fail the token
+    const nextNode = token.path[nextEdgeIndex + 1]
+    if (nextNode && this.isNodeUnavailable(nextNode)) {
+      console.log(`[TokenEngine] Token ${token.id} failed: next node ${nextNode} is unavailable`)
+      token.status = 'failed'
+      return
+    }
+
+    // Also check if the arrived node is unavailable (AZ failed while token was in transit)
+    if (this.isNodeUnavailable(arrivedAtNode)) {
+      console.log(`[TokenEngine] Token ${token.id} failed: arrived at unavailable node ${arrivedAtNode}`)
+      token.status = 'failed'
+      return
+    }
+
     const waitPoint = this.waitPoints.get(arrivedAtNode)
 
     if (waitPoint) {
