@@ -69,8 +69,11 @@ describe('ScenarioRunner', () => {
       const snapshot = runner.seekTo(2000)
 
       expect(snapshot.activeFlowId).toBe('req-normal')
+      // Token is traveling on first edge at t=2000 (emitted at t=1000, default edge duration 1500ms)
+      // Edge highlighting is derived from token position - only the edge with the token is highlighted
       expect(snapshot.animatingEdges.has('edge-sfo-region-us-east-1')).toBe(true)
-      expect(snapshot.animatingEdges.has('region-us-east-1-az-us-east-1-use1-az1')).toBe(true)
+      // Second edge not yet reached (token hasn't completed first edge at t=2500)
+      expect(snapshot.animatingEdges.has('region-us-east-1-az-us-east-1-use1-az1')).toBe(false)
     })
 
     it('resets state when seeking backwards', () => {
