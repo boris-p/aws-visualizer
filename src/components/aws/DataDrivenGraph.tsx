@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef } from "react";
+import { useEffect, useCallback, useRef, useMemo } from "react";
 import {
   ReactFlow,
   type Node,
@@ -13,13 +13,19 @@ import "@xyflow/react/dist/style.css";
 import "@/styles/scenario-animations.css";
 import type { NodeState } from "@/types/graph";
 import type { GraphDefinition } from "@/types/graph-type";
-import type { Token } from "@/types/token";
+import type { Token, WaitPointState } from "@/types/token";
 import { filterGraphByNodeTypes } from "@/utils/graphFilters";
 import TokenFlowEdge from "@/components/graph/TokenFlowEdge";
+import TokenAwareNode from "@/components/graph/TokenAwareNode";
 
 // Register custom edge types
 const edgeTypes = {
   tokenFlow: TokenFlowEdge,
+};
+
+// Register custom node types
+const nodeTypes = {
+  tokenAware: TokenAwareNode,
 };
 
 interface DataDrivenGraphProps {
@@ -30,6 +36,7 @@ interface DataDrivenGraphProps {
   visibleNodeTypes?: Set<string>
   tokens?: Token[]
   currentTimeMs?: number
+  waitPoints?: Map<string, WaitPointState>
 }
 
 export default function DataDrivenGraph({
@@ -40,6 +47,7 @@ export default function DataDrivenGraph({
   visibleNodeTypes,
   tokens = [],
   currentTimeMs = 0,
+  waitPoints,
 }: DataDrivenGraphProps) {
   const [nodes, setNodes, onNodesChange] = useNodesState<Node>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
@@ -88,7 +96,7 @@ export default function DataDrivenGraph({
     setEdges(flowEdges)
   }, [graphDefinition, visibleNodeTypes, setNodes, setEdges])
 
-  // Apply node states (failures, availability changes)
+  // Apply node states (failures, availability changes) and waiting tokens
   useEffect(() => {
     setNodes(nds => nds.map(node => {
       const state = nodeStates?.get(node.id)
@@ -101,8 +109,17 @@ export default function DataDrivenGraph({
       const isUnavailable = state?.status === 'unavailable'
       const isDegraded = state?.status === 'degraded'
 
-      // Build className from state
-      const classNames = [
+      // Get waiting tokens for this node
+      const waitingTokens = tokens.filter(
+        t => t.status === 'waiting' && t.waitingAtNode === node.id
+      ).sort((a, b) => (a.waitPosition || 0) - (b.waitPosition || 0))
+
+      // Use tokenAware node type if this node has a wait point or waiting tokens
+      const hasWaitPoint = waitPoints?.has(node.id)
+      const useTokenAwareNode = hasWaitPoint || waitingTokens.length > 0
+
+      // Build className from state (only for default nodes, tokenAware handles its own)
+      const classNames = useTokenAwareNode ? '' : [
         isUnavailable ? 'node-unavailable' : '',
         isDegraded ? 'node-degraded' : '',
         isInActivePath && !isUnavailable ? 'node-active-path' : ''
@@ -119,15 +136,18 @@ export default function DataDrivenGraph({
 
       return {
         ...node,
+        type: useTokenAwareNode ? 'tokenAware' : undefined,
         data: {
           ...node.data,
           label,
           state: state?.status,
+          waitingTokens,
+          currentTimeMs,
         },
         className: classNames,
       }
     }))
-  }, [nodeStates, animatingEdges, setNodes])
+  }, [nodeStates, animatingEdges, tokens, waitPoints, currentTimeMs, setNodes])
 
   // Apply edge animations and tokens
   useEffect(() => {
@@ -184,6 +204,7 @@ export default function DataDrivenGraph({
       <ReactFlow
         nodes={nodes}
         edges={edges}
+        nodeTypes={nodeTypes}
         edgeTypes={edgeTypes}
         onNodesChange={onNodesChange}
         onEdgesChange={onEdgesChange}

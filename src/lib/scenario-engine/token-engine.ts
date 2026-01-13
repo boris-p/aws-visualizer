@@ -158,6 +158,7 @@ export class TokenEngine {
     token.waitingAtNode = waitPoint.nodeId
     token.waitPosition = waitPoint.tokenIds.length
     token.progress = 0
+    token.currentSegmentStartMs = timeMs // Track when waiting started
 
     waitPoint.tokenIds.push(token.id)
 

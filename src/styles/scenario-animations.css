@@ -213,3 +213,161 @@
   stroke-dasharray: 8 4;
   animation: edge-flow 0.8s linear infinite;
 }
+
+/* ======================================
+   Token-Aware Node Styles
+   ====================================== */
+
+/* Base token-aware node styling */
+.token-aware-node {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 10px 14px;
+  min-width: 100px;
+  position: relative;
+  font-family: system-ui, -apple-system, sans-serif;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.token-aware-node:hover {
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+.token-aware-node.selected {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.token-aware-node.unavailable {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  box-shadow: 0 0 8px rgba(239, 68, 68, 0.3);
+}
+
+.token-aware-node.degraded {
+  background: #fffbeb;
+  border-color: #fcd34d;
+}
+
+.token-aware-node .node-content {
+  text-align: center;
+}
+
+.token-aware-node .node-label {
+  font-size: 11px;
+  font-weight: 500;
+  color: #374151;
+  white-space: pre-line;
+  line-height: 1.3;
+}
+
+/* React Flow handles for token-aware nodes */
+.token-aware-node .react-flow__handle {
+  width: 8px;
+  height: 8px;
+  background: #94a3b8;
+  border: 2px solid white;
+  border-radius: 50%;
+}
+
+.token-aware-node .react-flow__handle-left {
+  left: -4px;
+}
+
+.token-aware-node .react-flow__handle-right {
+  right: -4px;
+}
+
+/* Token indicator - positioned below the node */
+.token-indicator {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Individual tokens row */
+.token-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  background: rgba(59, 130, 246, 0.06);
+  padding: 3px 6px;
+  border-radius: 10px;
+  border: 1px solid rgba(59, 130, 246, 0.12);
+}
+
+.token-dot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+}
+
+/* Subtle opacity pulse for waiting tokens */
+.token-dot {
+  animation: indicator-pulse 2s ease-in-out infinite;
+}
+
+@keyframes indicator-pulse {
+  0%, 100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Token circle inside SVG */
+.token-circle {
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+}
+
+/* Overflow badge (+3, +4, etc) */
+.overflow-badge {
+  font-size: 9px;
+  font-weight: 600;
+  color: #3b82f6;
+  margin-left: 1px;
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+/* Progress bar for many tokens */
+.token-bar-container {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(59, 130, 246, 0.06);
+  padding: 3px 7px;
+  border-radius: 10px;
+  border: 1px solid rgba(59, 130, 246, 0.12);
+}
+
+.token-bar {
+  width: 36px;
+  height: 5px;
+  background: rgba(59, 130, 246, 0.12);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.token-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #3b82f6, #60a5fa);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.token-count {
+  font-size: 10px;
+  font-weight: 600;
+  color: #3b82f6;
+  min-width: 14px;
+  text-align: right;
+  font-family: system-ui, -apple-system, sans-serif;
+}
