@@ -10,7 +10,11 @@ import type { SimulationState } from './types'
 import type { SimulationStateStore } from './simulation-state-store'
 
 export class TokenManager {
-  constructor(private store: SimulationStateStore<SimulationState>) {}
+  private store: SimulationStateStore<SimulationState>
+
+  constructor(store: SimulationStateStore<SimulationState>) {
+    this.store = store
+  }
 
   /**
    * Get a token by ID.

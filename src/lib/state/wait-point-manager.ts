@@ -10,7 +10,11 @@ import type { SimulationState } from './types'
 import type { SimulationStateStore } from './simulation-state-store'
 
 export class WaitPointManager {
-  constructor(private store: SimulationStateStore<SimulationState>) {}
+  private store: SimulationStateStore<SimulationState>
+
+  constructor(store: SimulationStateStore<SimulationState>) {
+    this.store = store
+  }
 
   /**
    * Get a wait point's state by node ID.
