@@ -12,13 +12,14 @@ Interactive simulations that show requests flowing through AWS infrastructure. W
 
 | Scenario | What you'll learn |
 | -------- | ----------------- |
-| [Basic Request Flow](https://boris-p.github.io/aws-visualizer/?scenario=basic-request-flow) | How a request travels from user → CloudFront → your server |
-| [AZ Failure (No Redundancy)](https://boris-p.github.io/aws-visualizer/?scenario=az-failure-no-redundancy) | Why single-AZ deployments are scary |
-| [AZ Failure with Failover](https://boris-p.github.io/aws-visualizer/?scenario=az-failure-with-failover) | Multi-AZ saves the day |
-| [Round Robin Load Balancing](https://boris-p.github.io/aws-visualizer/?scenario=round-robin-load-balancing) | How ALB distributes traffic across instances |
-| [Burst Traffic & Queue Buildup](https://boris-p.github.io/aws-visualizer/?scenario=burst-traffic-queue-buildup) | Backpressure in action—watch queues grow |
-| [RDS Write Quorum](https://boris-p.github.io/aws-visualizer/?scenario=rds-write-quorum) | How database writes get replicated |
-| [RDS Read Scaling](https://boris-p.github.io/aws-visualizer/?scenario=rds-read-scaling) | Spreading read traffic across replicas |
+| [Basic Request Flow](https://boris-p.github.io/aws-visualizer/?graph=ec2-scenario-playground&scenario=basic-request-flow) | How a request travels from user → CloudFront → your server |
+| [AZ Failure (No Redundancy)](https://boris-p.github.io/aws-visualizer/?graph=ec2-scenario-playground&scenario=az-failure-no-redundancy) | Why single-AZ deployments are scary |
+| [AZ Failure with Failover](https://boris-p.github.io/aws-visualizer/?graph=ec2-scenario-playground&scenario=az-failure-with-failover) | Multi-AZ saves the day |
+| [Round Robin Load Balancing](https://boris-p.github.io/aws-visualizer/?graph=ec2-scenario-playground-detailed&scenario=round-robin-load-balancing) | How ALB distributes traffic across instances |
+| [Burst Traffic & Queue Buildup](https://boris-p.github.io/aws-visualizer/?graph=ec2-scenario-playground-detailed&scenario=burst-traffic-queue-buildup) | Backpressure in action—watch queues grow |
+| [RDS Write Quorum](https://boris-p.github.io/aws-visualizer/?graph=rds-multi-az-cluster&scenario=rds-write-quorum) | How database writes get replicated |
+| [RDS AZ Failure Failover](https://boris-p.github.io/aws-visualizer/?graph=rds-multi-az-cluster&scenario=rds-az-failure-failover) | Database failover when an AZ goes down |
+| [RDS Read Scaling](https://boris-p.github.io/aws-visualizer/?graph=rds-multi-az-cluster&scenario=rds-read-scaling) | Spreading read traffic across replicas |
 | Aurora Regional Failover | In progress |
 
 ## Running locally
