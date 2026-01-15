@@ -1,5 +1,6 @@
 import type { Scenario, ScenarioEvent, RequestFlow } from '@/types/scenario'
 import type { NodeState } from '@/types/graph'
+
 import type { GraphDefinition } from '@/types/graph-type'
 import type { ScenarioExecutionContext } from '@/types/scenario-engine'
 
