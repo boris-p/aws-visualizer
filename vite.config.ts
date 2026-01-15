@@ -5,6 +5,7 @@ import { defineConfig } from "vite"
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/aws-visualizer/", // Required for GitHub Pages
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {
