@@ -68,7 +68,7 @@ export const crossRegionFailover: FailoverStrategy = {
   id: 'cross-region-failover',
   computeFailover(
     primaryPath: string[],
-    failedNodeId: string,
+    _failedNodeId: string,
     context: ScenarioExecutionContext
   ): string[] | null {
     const { graphTopology } = context

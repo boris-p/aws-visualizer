@@ -1,4 +1,4 @@
-import { useEffect, useCallback, useRef, useMemo } from "react";
+import { useEffect, useCallback, useRef } from "react";
 import {
   ReactFlow,
   type Node,
@@ -26,12 +26,12 @@ const edgeTypes = {
 // Register custom node types
 const nodeTypes = {
   tokenAware: TokenAwareNode,
-};
+} as const;
 
 interface DataDrivenGraphProps {
   graphDefinition: GraphDefinition
   nodeStates?: Map<string, NodeState>
-  onNodeStateToggle?: (nodeId: string, newState: string) => void
+  onNodeStateToggle?: (nodeId: string, newState: 'available' | 'unavailable') => void
   animatingEdges?: Set<string>
   visibleNodeTypes?: Set<string>
   tokens?: Token[]

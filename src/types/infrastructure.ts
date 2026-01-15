@@ -1,4 +1,4 @@
-import { NodeType } from './graph-nodes'
+import { type NodeType, NodeType as NodeTypeValues } from './graph-nodes'
 
 export interface InfrastructureResource {
   id: string
@@ -10,7 +10,7 @@ export interface InfrastructureResource {
 
 export interface EC2Instance extends InfrastructureResource {
   type: 'ec2'
-  nodeType: NodeType.DATA_CENTER
+  nodeType: typeof NodeTypeValues.DATA_CENTER
   regionId: string
   azId: string
   instanceType: string

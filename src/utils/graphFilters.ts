@@ -1,4 +1,4 @@
-import type { GraphDefinition, GraphNode, GraphEdge } from '@/types/graph-type'
+import type { GraphDefinition } from '@/types/graph-type'
 
 /**
  * Filters a graph definition based on visible node types.

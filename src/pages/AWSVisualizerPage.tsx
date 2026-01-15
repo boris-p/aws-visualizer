@@ -87,7 +87,6 @@ export default function AWSVisualizerPage() {
   // Scenario player hook - pass graph topology for token path computation
   const {
     isPlaying,
-    isPaused,
     currentTimeMs,
     nodeStates,
     animatingEdges,
@@ -283,7 +282,6 @@ export default function AWSVisualizerPage() {
           <ScenarioPlayer
             scenario={selectedScenario}
             isPlaying={isPlaying}
-            isPaused={isPaused}
             currentTimeMs={currentTimeMs}
             onPlay={play}
             onPause={pause}

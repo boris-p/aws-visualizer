@@ -30,7 +30,7 @@ export function useScenarioPlayer(scenario: Scenario | null, graphTopology?: Gra
     waitPoints: new Map()
   })
 
-  const animationFrameRef = useRef<number>()
+  const animationFrameRef = useRef<number | undefined>(undefined)
   const lastTimestampRef = useRef<number>(0)
   const currentTimeMsRef = useRef<number>(0) // Track time in ref for animation loop
 

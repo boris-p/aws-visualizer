@@ -1,14 +1,19 @@
-import { Handle, Position, type NodeProps } from '@xyflow/react'
+import { Handle, Position } from '@xyflow/react'
 import type { Token } from '@/types/token'
 import { getTokenType } from '@/types/token'
 
-interface TokenAwareNodeData extends Record<string, unknown> {
+interface TokenAwareNodeData {
   label: string
   waitingTokens?: Token[]
   state?: string
   type?: string
   isInteractive?: boolean
   currentTimeMs?: number
+}
+
+interface TokenAwareNodeProps {
+  data: TokenAwareNodeData
+  selected?: boolean
 }
 
 // Max tokens to show individually before collapsing
@@ -18,7 +23,7 @@ const MAX_VISIBLE_TOKENS = 3
 // This prevents flickering when tokens pass through quickly
 const MIN_WAIT_TIME_MS = 200
 
-export default function TokenAwareNode({ data, selected }: NodeProps<TokenAwareNodeData>) {
+export default function TokenAwareNode({ data, selected }: TokenAwareNodeProps) {
   const allWaitingTokens = (data.waitingTokens || []) as Token[]
   const currentTimeMs = (data.currentTimeMs || 0) as number
   const isUnavailable = data.state === 'unavailable'

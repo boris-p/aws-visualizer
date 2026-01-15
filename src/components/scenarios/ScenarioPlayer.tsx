@@ -1,10 +1,9 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef } from 'react'
 import type { Scenario, ScenarioEvent } from '@/types/scenario'
 
 interface ScenarioPlayerProps {
   scenario: Scenario
   isPlaying: boolean
-  isPaused: boolean
   currentTimeMs: number
   onPlay: () => void
   onPause: () => void
@@ -12,12 +11,9 @@ interface ScenarioPlayerProps {
   onSeek: (timeMs: number) => void
 }
 
-type PlaybackSpeed = 0.5 | 1 | 2
-
 export default function ScenarioPlayer({
   scenario,
   isPlaying,
-  isPaused,
   currentTimeMs,
   onPlay,
   onPause,

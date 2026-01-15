@@ -2,7 +2,6 @@ import { Button } from '@/components/ui/button'
 
 interface ScenarioPlayerControlsProps {
   isPlaying: boolean
-  isPaused: boolean
   currentTimeMs: number
   durationMs: number
   onPlay: () => void
@@ -12,7 +11,6 @@ interface ScenarioPlayerControlsProps {
 
 export default function ScenarioPlayerControls({
   isPlaying,
-  isPaused,
   currentTimeMs,
   durationMs,
   onPlay,

@@ -1,4 +1,3 @@
-import type { RequestFlow, Scenario, ScenarioEvent } from '@/types/scenario'
 import type { NodeState } from '@/types/graph'
 
 export class AWSRoutingEngine {
@@ -6,10 +5,10 @@ export class AWSRoutingEngine {
    * Calculate request path based on AWS routing rules
    */
   static calculatePath(
-    sourceLocation: string,
-    targetServiceId: string,
-    useCloudFront: boolean,
-    availableNodes: Map<string, NodeState>
+    _sourceLocation: string,
+    _targetServiceId: string,
+    _useCloudFront: boolean,
+    _availableNodes: Map<string, NodeState>
   ): string[] {
     // AWS-accurate logic:
     // 1. Start from nearest edge location (if CloudFront enabled)

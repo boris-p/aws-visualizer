@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import HierarchyGraph from '@/components/aws/HierarchyGraph'
 import PartitionFilter from '@/components/aws/PartitionFilter'
@@ -7,8 +7,8 @@ import { useScenarioPlayer } from '@/hooks/useScenarioPlayer'
 import ScenarioSelector from '@/components/scenarios/ScenarioSelector'
 import ScenarioPlayerControls from '@/components/scenarios/ScenarioPlayerControls'
 import ScenarioInfo from '@/components/scenarios/ScenarioInfo'
+import { scenarios as availableScenarios } from '@/data/scenarios'
 import type { PartitionId } from '@/types/aws'
-import type { Scenario } from '@/types/scenario'
 
 export default function AWSHierarchyPage() {
   const [visiblePartitions, setVisiblePartitions] = useState<Set<PartitionId>>(
@@ -18,14 +18,12 @@ export default function AWSHierarchyPage() {
   const [showDataCenters, setShowDataCenters] = useState(false)
 
   // Scenario state
-  const [scenarios, setScenarios] = useState<Scenario[]>([])
   const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null)
-  const selectedScenario = scenarios.find(s => s.id === selectedScenarioId) || null
+  const selectedScenario = availableScenarios.find(s => s.id === selectedScenarioId) || null
 
   // Scenario player hook
   const {
     isPlaying,
-    isPaused,
     currentTimeMs,
     nodeStates,
     animatingEdges,
@@ -34,13 +32,6 @@ export default function AWSHierarchyPage() {
     reset,
     toggleNodeState
   } = useScenarioPlayer(selectedScenario)
-
-  // Load scenarios on mount
-  useEffect(() => {
-    import('@/data/scenarios/sample-playbooks.json').then(data => {
-      setScenarios(data.scenarios)
-    })
-  }, [])
 
   const togglePartition = (id: PartitionId) => {
     setVisiblePartitions((prev) => {
@@ -62,17 +53,16 @@ export default function AWSHierarchyPage() {
           <Navigation />
         </div>
         <div className="flex items-center gap-4">
-          {scenarios.length > 0 && (
+          {availableScenarios.length > 0 && (
             <>
               <ScenarioSelector
-                scenarios={scenarios}
+                scenarios={availableScenarios}
                 selectedId={selectedScenarioId}
                 onSelect={setSelectedScenarioId}
               />
               {selectedScenario && (
                 <ScenarioPlayerControls
                   isPlaying={isPlaying}
-                  isPaused={isPaused}
                   currentTimeMs={currentTimeMs}
                   durationMs={selectedScenario.durationMs}
                   onPlay={play}

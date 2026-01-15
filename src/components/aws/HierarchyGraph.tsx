@@ -417,7 +417,7 @@ interface HierarchyGraphProps {
   showEdgeLocations: boolean
   showDataCenters: boolean
   nodeStates?: Map<string, NodeState>
-  onNodeStateToggle?: (nodeId: string, newState: string) => void
+  onNodeStateToggle?: (nodeId: string, newState: 'available' | 'unavailable') => void
   animatingEdges?: Set<string>
 }
 
@@ -433,7 +433,7 @@ export default function HierarchyGraph({
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   // Handle node click for interactive nodes
-  const onNodeClick = useCallback((event: React.MouseEvent, node: Node) => {
+  const onNodeClick = useCallback((_event: React.MouseEvent, node: Node) => {
     if (node.data.isInteractive && onNodeStateToggle) {
       const currentState = nodeStates?.get(node.id)?.status || 'available'
       const newState = currentState === 'available' ? 'unavailable' : 'available'

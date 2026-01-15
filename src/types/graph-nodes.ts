@@ -1,19 +1,15 @@
 import type { NodeState } from './graph'
 
-export enum NodeType {
-  AWS_ROOT = 'aws-root',
-  PARTITION = 'partition',
-  REGION = 'region',
-  AVAILABILITY_ZONE = 'az',
-  DATA_CENTER = 'dc',
-  EDGE_LOCATION = 'edge',
-  // Future node types (commented for clarity):
-  // EC2_INSTANCE = 'ec2-instance',
-  // LOAD_BALANCER = 'load-balancer',
-  // RDS_INSTANCE = 'rds-instance',
-  // LAMBDA_FUNCTION = 'lambda',
-  // S3_BUCKET = 's3',
-}
+export const NodeType = {
+  AWS_ROOT: 'aws-root',
+  PARTITION: 'partition',
+  REGION: 'region',
+  AVAILABILITY_ZONE: 'az',
+  DATA_CENTER: 'dc',
+  EDGE_LOCATION: 'edge',
+} as const
+
+export type NodeType = typeof NodeType[keyof typeof NodeType]
 
 export interface NodeTypeConfig {
   type: NodeType
