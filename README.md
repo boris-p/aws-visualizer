@@ -10,16 +10,16 @@ Interactive simulations that show requests flowing through AWS infrastructure. W
 
 ## Simulations
 
-| Scenario                          | What you'll learn                                          |
-| --------------------------------- | ---------------------------------------------------------- |
-| **Basic Request Flow**            | How a request travels from user → CloudFront → your server |
-| **AZ Failure (No Redundancy)**    | Why single-AZ deployments are scary                        |
-| **AZ Failure with Failover**      | Multi-AZ saves the day                                     |
-| **Round Robin Load Balancing**    | How ALB distributes traffic across instances               |
-| **Burst Traffic & Queue Buildup** | Backpressure in action—watch queues grow                   |
-| **RDS Write Quorum**              | How database writes get replicated                         |
-| **RDS Read Scaling**              | Spreading read traffic across replicas                     |
-| **Aurora Regional Failover**      | In progress                                                |
+| Scenario | What you'll learn |
+| -------- | ----------------- |
+| [Basic Request Flow](https://boris-p.github.io/aws-visualizer/?scenario=basic-request-flow) | How a request travels from user → CloudFront → your server |
+| [AZ Failure (No Redundancy)](https://boris-p.github.io/aws-visualizer/?scenario=az-failure-no-redundancy) | Why single-AZ deployments are scary |
+| [AZ Failure with Failover](https://boris-p.github.io/aws-visualizer/?scenario=az-failure-with-failover) | Multi-AZ saves the day |
+| [Round Robin Load Balancing](https://boris-p.github.io/aws-visualizer/?scenario=round-robin-load-balancing) | How ALB distributes traffic across instances |
+| [Burst Traffic & Queue Buildup](https://boris-p.github.io/aws-visualizer/?scenario=burst-traffic-queue-buildup) | Backpressure in action—watch queues grow |
+| [RDS Write Quorum](https://boris-p.github.io/aws-visualizer/?scenario=rds-write-quorum) | How database writes get replicated |
+| [RDS Read Scaling](https://boris-p.github.io/aws-visualizer/?scenario=rds-read-scaling) | Spreading read traffic across replicas |
+| Aurora Regional Failover | In progress |
 
 ## Running locally
 
