@@ -1,0 +1,71 @@
+{
+  "id": "aurora-write-quorum",
+  "name": "Aurora Write to Storage",
+  "description": "Writes go to primary instance, then persist to shared storage. Storage replicates across AZs (6 copies). On AZ failure, reader is promoted.",
+  "graphId": "aurora-global-database",
+  "infrastructureId": "aurora-global",
+  "durationMs": 45000,
+  "tokenFlowConfig": {
+    "defaultEdgeDurationMs": 600,
+    "tokenTypes": [
+      { "id": "write", "shape": "circle", "color": "#f59e0b", "size": 12, "label": "Write" },
+      { "id": "storage-write", "shape": "square", "color": "#8b5cf6", "size": 8, "label": "Persist" }
+    ]
+  },
+  "algorithms": {
+    "pathSelector": {
+      "type": "static",
+      "config": {}
+    },
+    "fanOut": {
+      "type": "broadcast-replication",
+      "config": {
+        "nodeTypes": ["aurora-writer", "aurora-reader"],
+        "nodeRoles": ["primary"],
+        "childTypeId": "storage-write"
+      }
+    }
+  },
+  "events": [
+    { "id": "set-primary", "timestampMs": 0, "action": "promote", "targetType": "instance", "targetId": "us-writer", "promotionRole": "primary" },
+    { "id": "write-1", "timestampMs": 1000, "action": "route-request", "targetType": "instance", "targetId": "us-writer", "flowId": "write-to-primary" },
+    { "id": "write-2", "timestampMs": 5000, "action": "route-request", "targetType": "instance", "targetId": "us-writer", "flowId": "write-to-primary" },
+    { "id": "write-3", "timestampMs": 9000, "action": "route-request", "targetType": "instance", "targetId": "us-writer", "flowId": "write-to-primary" },
+    { "id": "write-4", "timestampMs": 13000, "action": "route-request", "targetType": "instance", "targetId": "us-writer", "flowId": "write-to-primary" },
+    { "id": "fail-az1", "timestampMs": 18000, "action": "fail", "targetType": "az", "targetId": "us-az-1", "failureType": "az-outage", "failureMessage": "AZ Failure", "cascadeEffect": { "propagateToChildren": true, "affectedResourceIds": ["us-writer"] } },
+    { "id": "demote-writer", "timestampMs": 21000, "action": "promote", "targetType": "instance", "targetId": "us-writer", "promotionRole": "standby" },
+    { "id": "promote-reader", "timestampMs": 21000, "action": "promote", "targetType": "instance", "targetId": "us-reader-1", "promotionRole": "primary" },
+    { "id": "write-5", "timestampMs": 24000, "action": "route-request", "targetType": "instance", "targetId": "us-reader-1", "flowId": "write-failover" },
+    { "id": "write-6", "timestampMs": 28000, "action": "route-request", "targetType": "instance", "targetId": "us-reader-1", "flowId": "write-failover" },
+    { "id": "write-7", "timestampMs": 32000, "action": "route-request", "targetType": "instance", "targetId": "us-reader-1", "flowId": "write-failover" },
+    { "id": "write-8", "timestampMs": 36000, "action": "route-request", "targetType": "instance", "targetId": "us-reader-1", "flowId": "write-failover" }
+  ],
+  "requestFlows": [
+    {
+      "id": "write-to-primary",
+      "sourceLocation": "Application",
+      "targetServiceId": "us-shared-storage",
+      "path": ["client", "global-writer-endpoint", "region-us-east-1", "us-az-1", "us-writer", "us-shared-storage"],
+      "latencyMs": 50,
+      "status": "success",
+      "routingStrategy": "direct"
+    },
+    {
+      "id": "write-failover",
+      "sourceLocation": "Application",
+      "targetServiceId": "us-shared-storage",
+      "path": ["client", "global-writer-endpoint", "region-us-east-1", "us-az-2", "us-reader-1", "us-shared-storage"],
+      "latencyMs": 50,
+      "status": "success",
+      "routingStrategy": "direct",
+      "visualState": "failover"
+    }
+  ],
+  "expectedOutcome": "Before AZ failure: writes go to primary writer, then persist to shared storage (6 copies across AZs). After AZ-1 fails: reader promoted to primary, continues writing to same shared storage.",
+  "awsContext": {
+    "useCloudFront": false,
+    "useMultiAz": true,
+    "useAutoScaling": false,
+    "healthCheckEnabled": true
+  }
+}

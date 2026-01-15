@@ -1,0 +1,53 @@
+{
+  "id": "rds-write-quorum",
+  "name": "RDS Write with Quorum Replication",
+  "description": "Write requests flow to the primary, then replicate to standby readers with quorum acknowledgment (1 of 2 needed)",
+  "graphId": "rds-multi-az-cluster",
+  "infrastructureId": "rds-multi-az",
+  "durationMs": 20000,
+  "tokenFlowConfig": {
+    "defaultEdgeDurationMs": 800,
+    "tokenTypes": [
+      { "id": "write", "shape": "circle", "color": "#f59e0b", "size": 10, "label": "Write" },
+      { "id": "replication", "shape": "diamond", "color": "#8b5cf6", "size": 8, "label": "Repl" }
+    ]
+  },
+  "algorithms": {
+    "fanOut": {
+      "type": "quorum-replication",
+      "config": {
+        "nodeTypes": ["rds-primary"],
+        "quorumRequired": 1,
+        "childTypeId": "replication"
+      }
+    }
+  },
+  "events": [
+    { "id": "write-1", "timestampMs": 500, "action": "route-request", "targetType": "instance", "targetId": "rds-writer", "flowId": "write-flow" },
+    { "id": "write-2", "timestampMs": 2500, "action": "route-request", "targetType": "instance", "targetId": "rds-writer", "flowId": "write-flow" },
+    { "id": "write-3", "timestampMs": 4500, "action": "route-request", "targetType": "instance", "targetId": "rds-writer", "flowId": "write-flow" },
+    { "id": "write-4", "timestampMs": 6500, "action": "route-request", "targetType": "instance", "targetId": "rds-writer", "flowId": "write-flow" },
+    { "id": "write-5", "timestampMs": 8500, "action": "route-request", "targetType": "instance", "targetId": "rds-writer", "flowId": "write-flow" },
+    { "id": "write-6", "timestampMs": 10500, "action": "route-request", "targetType": "instance", "targetId": "rds-writer", "flowId": "write-flow" },
+    { "id": "write-7", "timestampMs": 12500, "action": "route-request", "targetType": "instance", "targetId": "rds-writer", "flowId": "write-flow" },
+    { "id": "write-8", "timestampMs": 14500, "action": "route-request", "targetType": "instance", "targetId": "rds-writer", "flowId": "write-flow" }
+  ],
+  "requestFlows": [
+    {
+      "id": "write-flow",
+      "sourceLocation": "Application Client",
+      "targetServiceId": "rds-writer",
+      "path": ["client", "region-us-east-1", "az-use1-az1", "rds-writer"],
+      "latencyMs": 50,
+      "status": "success",
+      "routingStrategy": "direct"
+    }
+  ],
+  "expectedOutcome": "Writes arrive at primary, fan out to both readers. Parent write completes when first replication succeeds (quorum = 1).",
+  "awsContext": {
+    "useCloudFront": false,
+    "useMultiAz": true,
+    "useAutoScaling": false,
+    "healthCheckEnabled": true
+  }
+}

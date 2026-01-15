@@ -65,6 +65,33 @@ export interface QuorumConfig {
   writeQuorum: number
 }
 
+// Fan-out result describing how tokens should replicate
+export interface FanOutResult {
+  shouldFanOut: boolean
+  childPaths: string[][]      // Paths for each child token
+  childTypeId?: string        // Token type for children (default: same as parent)
+  quorumRequired: number      // How many children must complete
+}
+
+// Fan-out strategy for token replication (e.g., database writes with quorum)
+export interface FanOutStrategy {
+  id: string
+  // Compute fan-out paths when a token arrives at a node
+  computeFanOut(
+    nodeId: string,
+    context: ScenarioExecutionContext,
+    config?: FanOutConfig
+  ): FanOutResult
+}
+
+// Configuration for fan-out algorithm
+export interface FanOutConfig {
+  nodeTypes?: string[]        // Node types that trigger fan-out (e.g., ['rds-primary'])
+  nodeRoles?: string[]        // Node roles (from metadata.role) that trigger fan-out (e.g., ['primary'])
+  quorumRequired?: number     // Override: how many children must complete (default: all)
+  childTypeId?: string        // Override: token type for children
+}
+
 // Algorithm reference in scenario definition
 export interface AlgorithmRef {
   type: string

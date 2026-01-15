@@ -2,7 +2,8 @@ import type {
   LoadBalancer,
   PathSelector,
   FailoverStrategy,
-  ConsensusAlgorithm
+  ConsensusAlgorithm,
+  FanOutStrategy
 } from '@/types/scenario-engine'
 
 import {
@@ -14,7 +15,8 @@ import {
 import {
   staticPathSelector,
   healthiestPathSelector,
-  geoAwarePathSelector
+  geoAwarePathSelector,
+  primaryAwarePathSelector
 } from './algorithms/path-selectors'
 
 import {
@@ -29,11 +31,18 @@ import {
   eventuallyConsistent
 } from './algorithms/consensus'
 
+import {
+  quorumReplication,
+  broadcastReplication,
+  noFanOut
+} from './algorithms/fan-out-strategies'
+
 class AlgorithmRegistry {
   private loadBalancers = new Map<string, LoadBalancer>()
   private pathSelectors = new Map<string, PathSelector>()
   private failoverStrategies = new Map<string, FailoverStrategy>()
   private consensusAlgorithms = new Map<string, ConsensusAlgorithm>()
+  private fanOutStrategies = new Map<string, FanOutStrategy>()
 
   constructor() {
     // Register built-in algorithms
@@ -50,6 +59,7 @@ class AlgorithmRegistry {
     this.registerPathSelector(staticPathSelector)
     this.registerPathSelector(healthiestPathSelector)
     this.registerPathSelector(geoAwarePathSelector)
+    this.registerPathSelector(primaryAwarePathSelector)
 
     // Failover strategies
     this.registerFailoverStrategy(sameRegionFailover)
@@ -60,6 +70,11 @@ class AlgorithmRegistry {
     this.registerConsensusAlgorithm(majorityQuorum)
     this.registerConsensusAlgorithm(strictQuorum)
     this.registerConsensusAlgorithm(eventuallyConsistent)
+
+    // Fan-out strategies
+    this.registerFanOutStrategy(quorumReplication)
+    this.registerFanOutStrategy(broadcastReplication)
+    this.registerFanOutStrategy(noFanOut)
   }
 
   // Load Balancers
@@ -98,6 +113,15 @@ class AlgorithmRegistry {
     return this.consensusAlgorithms.get(id)
   }
 
+  // Fan-out Strategies
+  registerFanOutStrategy(algo: FanOutStrategy): void {
+    this.fanOutStrategies.set(algo.id, algo)
+  }
+
+  getFanOutStrategy(id: string): FanOutStrategy | undefined {
+    return this.fanOutStrategies.get(id)
+  }
+
   // List available algorithms
   listLoadBalancers(): string[] {
     return Array.from(this.loadBalancers.keys())
@@ -113,6 +137,10 @@ class AlgorithmRegistry {
 
   listConsensusAlgorithms(): string[] {
     return Array.from(this.consensusAlgorithms.keys())
+  }
+
+  listFanOutStrategies(): string[] {
+    return Array.from(this.fanOutStrategies.keys())
   }
 }
 

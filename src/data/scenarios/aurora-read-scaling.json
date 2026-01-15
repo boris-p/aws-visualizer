@@ -1,0 +1,74 @@
+{
+  "id": "aurora-read-scaling",
+  "name": "Aurora Read Scaling",
+  "description": "Reads use regional Reader Endpoints. Reader endpoint routes to local readers. On AZ failure, reads failover to EU region.",
+  "graphId": "aurora-global-database",
+  "infrastructureId": "aurora-global",
+  "durationMs": 45000,
+  "tokenFlowConfig": {
+    "defaultEdgeDurationMs": 600,
+    "tokenTypes": [
+      { "id": "read", "shape": "circle", "color": "#3b82f6", "size": 12, "label": "Read" }
+    ]
+  },
+  "algorithms": {
+    "pathSelector": {
+      "type": "static",
+      "config": {}
+    }
+  },
+  "events": [
+    { "id": "set-primary", "timestampMs": 0, "action": "promote", "targetType": "instance", "targetId": "us-writer", "promotionRole": "primary" },
+    { "id": "read-1", "timestampMs": 1000, "action": "route-request", "targetType": "instance", "targetId": "us-reader-1", "flowId": "read-us" },
+    { "id": "read-2", "timestampMs": 4000, "action": "route-request", "targetType": "instance", "targetId": "us-reader-1", "flowId": "read-us" },
+    { "id": "read-3", "timestampMs": 7000, "action": "route-request", "targetType": "instance", "targetId": "us-reader-1", "flowId": "read-us" },
+    { "id": "read-4", "timestampMs": 10000, "action": "route-request", "targetType": "instance", "targetId": "us-reader-1", "flowId": "read-us" },
+    { "id": "fail-az2", "timestampMs": 14000, "action": "fail", "targetType": "az", "targetId": "us-az-2", "failureType": "az-outage", "failureMessage": "AZ Failure", "cascadeEffect": { "propagateToChildren": true, "affectedResourceIds": ["us-reader-1"] } },
+    { "id": "read-5", "timestampMs": 17000, "action": "route-request", "targetType": "instance", "targetId": "eu-reader-1", "flowId": "read-eu-1" },
+    { "id": "read-6", "timestampMs": 20000, "action": "route-request", "targetType": "instance", "targetId": "eu-reader-2", "flowId": "read-eu-2" },
+    { "id": "read-7", "timestampMs": 23000, "action": "route-request", "targetType": "instance", "targetId": "eu-reader-1", "flowId": "read-eu-1" },
+    { "id": "read-8", "timestampMs": 26000, "action": "route-request", "targetType": "instance", "targetId": "eu-reader-2", "flowId": "read-eu-2" },
+    { "id": "recover-az2", "timestampMs": 30000, "action": "recover", "targetType": "az", "targetId": "us-az-2", "cascadeEffect": { "propagateToChildren": true, "affectedResourceIds": ["us-reader-1"] } },
+    { "id": "read-9", "timestampMs": 33000, "action": "route-request", "targetType": "instance", "targetId": "us-reader-1", "flowId": "read-us" },
+    { "id": "read-10", "timestampMs": 36000, "action": "route-request", "targetType": "instance", "targetId": "us-reader-1", "flowId": "read-us" },
+    { "id": "read-11", "timestampMs": 39000, "action": "route-request", "targetType": "instance", "targetId": "us-reader-1", "flowId": "read-us" }
+  ],
+  "requestFlows": [
+    {
+      "id": "read-us",
+      "sourceLocation": "Application",
+      "targetServiceId": "us-reader-1",
+      "path": ["client", "us-reader-endpoint", "region-us-east-1", "us-az-2", "us-reader-1"],
+      "latencyMs": 30,
+      "status": "success",
+      "routingStrategy": "direct"
+    },
+    {
+      "id": "read-eu-1",
+      "sourceLocation": "Application",
+      "targetServiceId": "eu-reader-1",
+      "path": ["client", "eu-reader-endpoint", "region-eu-west-1", "eu-az-1", "eu-reader-1"],
+      "latencyMs": 100,
+      "status": "success",
+      "routingStrategy": "direct",
+      "visualState": "failover"
+    },
+    {
+      "id": "read-eu-2",
+      "sourceLocation": "Application",
+      "targetServiceId": "eu-reader-2",
+      "path": ["client", "eu-reader-endpoint", "region-eu-west-1", "eu-az-2", "eu-reader-2"],
+      "latencyMs": 100,
+      "status": "success",
+      "routingStrategy": "direct",
+      "visualState": "failover"
+    }
+  ],
+  "expectedOutcome": "Phase 1: Reads go to US reader (~30ms). Phase 2: US reader AZ fails, reads switch to EU readers (~100ms). Phase 3: US AZ recovers, reads return to US.",
+  "awsContext": {
+    "useCloudFront": false,
+    "useMultiAz": true,
+    "useAutoScaling": false,
+    "healthCheckEnabled": true
+  }
+}

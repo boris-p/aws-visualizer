@@ -1,0 +1,145 @@
+{
+  "id": "aurora-global-database",
+  "name": "Aurora Global Database",
+  "description": "Multi-region Aurora with shared storage architecture and cross-region replication",
+  "nodes": [
+    {
+      "id": "client",
+      "label": "Application",
+      "type": "client",
+      "position": { "x": 0, "y": 250 }
+    },
+    {
+      "id": "global-writer-endpoint",
+      "label": "Global Writer",
+      "sublabel": "Endpoint",
+      "type": "dns-endpoint",
+      "position": { "x": 150, "y": 150 }
+    },
+    {
+      "id": "us-reader-endpoint",
+      "label": "US Reader",
+      "sublabel": "Endpoint",
+      "type": "dns-endpoint",
+      "position": { "x": 150, "y": 250 }
+    },
+    {
+      "id": "eu-reader-endpoint",
+      "label": "EU Reader",
+      "sublabel": "Endpoint",
+      "type": "dns-endpoint",
+      "position": { "x": 150, "y": 350 }
+    },
+    {
+      "id": "region-us-east-1",
+      "label": "US East 1",
+      "sublabel": "Primary Region",
+      "type": "region",
+      "position": { "x": 350, "y": 100 }
+    },
+    {
+      "id": "region-eu-west-1",
+      "label": "EU West 1",
+      "sublabel": "Secondary Region",
+      "type": "region",
+      "position": { "x": 350, "y": 400 }
+    },
+    {
+      "id": "us-az-1",
+      "label": "AZ 1",
+      "type": "az",
+      "isInteractive": true,
+      "position": { "x": 500, "y": 50 }
+    },
+    {
+      "id": "us-az-2",
+      "label": "AZ 2",
+      "type": "az",
+      "isInteractive": true,
+      "position": { "x": 500, "y": 150 }
+    },
+    {
+      "id": "eu-az-1",
+      "label": "AZ 1",
+      "type": "az",
+      "isInteractive": true,
+      "position": { "x": 500, "y": 350 }
+    },
+    {
+      "id": "eu-az-2",
+      "label": "AZ 2",
+      "type": "az",
+      "isInteractive": true,
+      "position": { "x": 500, "y": 450 }
+    },
+    {
+      "id": "us-writer",
+      "label": "Writer",
+      "sublabel": "Primary",
+      "type": "aurora-writer",
+      "position": { "x": 650, "y": 50 }
+    },
+    {
+      "id": "us-reader-1",
+      "label": "Reader",
+      "type": "aurora-reader",
+      "position": { "x": 650, "y": 150 }
+    },
+    {
+      "id": "eu-reader-1",
+      "label": "Reader",
+      "type": "aurora-reader",
+      "position": { "x": 650, "y": 350 }
+    },
+    {
+      "id": "eu-reader-2",
+      "label": "Reader",
+      "type": "aurora-reader",
+      "position": { "x": 650, "y": 450 }
+    },
+    {
+      "id": "us-shared-storage",
+      "label": "Shared Storage",
+      "sublabel": "6 copies / 3 AZs",
+      "type": "aurora-storage",
+      "position": { "x": 800, "y": 100 }
+    },
+    {
+      "id": "eu-shared-storage",
+      "label": "Shared Storage",
+      "sublabel": "6 copies / 3 AZs",
+      "type": "aurora-storage",
+      "position": { "x": 800, "y": 400 }
+    }
+  ],
+  "edges": [
+    { "id": "client-to-global-writer", "source": "client", "target": "global-writer-endpoint" },
+    { "id": "client-to-us-reader", "source": "client", "target": "us-reader-endpoint" },
+    { "id": "client-to-eu-reader", "source": "client", "target": "eu-reader-endpoint" },
+
+    { "id": "global-writer-to-us", "source": "global-writer-endpoint", "target": "region-us-east-1" },
+    { "id": "global-writer-to-eu", "source": "global-writer-endpoint", "target": "region-eu-west-1", "style": { "strokeDasharray": "5,5", "opacity": 0.3 } },
+    { "id": "us-reader-ep-to-us", "source": "us-reader-endpoint", "target": "region-us-east-1" },
+    { "id": "eu-reader-ep-to-eu", "source": "eu-reader-endpoint", "target": "region-eu-west-1" },
+
+    { "id": "us-to-az1", "source": "region-us-east-1", "target": "us-az-1" },
+    { "id": "us-to-az2", "source": "region-us-east-1", "target": "us-az-2" },
+    { "id": "eu-to-az1", "source": "region-eu-west-1", "target": "eu-az-1" },
+    { "id": "eu-to-az2", "source": "region-eu-west-1", "target": "eu-az-2" },
+
+    { "id": "us-az1-to-writer", "source": "us-az-1", "target": "us-writer" },
+    { "id": "us-az2-to-reader1", "source": "us-az-2", "target": "us-reader-1" },
+    { "id": "eu-az1-to-reader1", "source": "eu-az-1", "target": "eu-reader-1" },
+    { "id": "eu-az2-to-reader2", "source": "eu-az-2", "target": "eu-reader-2" },
+
+    { "id": "us-writer-to-storage", "source": "us-writer", "target": "us-shared-storage", "label": "write", "style": { "stroke": "#f59e0b" } },
+    { "id": "us-reader1-to-storage", "source": "us-reader-1", "target": "us-shared-storage", "label": "write", "style": { "stroke": "#f59e0b", "strokeDasharray": "3,3", "opacity": 0.5 } },
+    { "id": "us-storage-to-reader", "source": "us-shared-storage", "target": "us-reader-1", "style": { "stroke": "#3b82f6", "strokeDasharray": "3,3", "opacity": 0.5 } },
+
+    { "id": "eu-reader1-to-storage", "source": "eu-reader-1", "target": "eu-shared-storage", "label": "write", "style": { "stroke": "#f59e0b", "strokeDasharray": "3,3", "opacity": 0.5 } },
+    { "id": "eu-storage-to-reader1", "source": "eu-shared-storage", "target": "eu-reader-1", "style": { "stroke": "#3b82f6", "strokeDasharray": "3,3", "opacity": 0.5 } },
+    { "id": "eu-storage-to-reader2", "source": "eu-shared-storage", "target": "eu-reader-2", "style": { "stroke": "#3b82f6", "strokeDasharray": "3,3", "opacity": 0.5 } },
+
+    { "id": "cross-region-replication", "source": "us-shared-storage", "target": "eu-shared-storage", "label": "async ~1s", "style": { "stroke": "#22c55e", "strokeDasharray": "5,5", "opacity": 0.6 } }
+  ]
+}

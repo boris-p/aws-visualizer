@@ -1,0 +1,74 @@
+{
+  "id": "aurora-regional-failover",
+  "name": "Aurora Regional Failover",
+  "description": "Primary region fails. Storage-level replication ensures EU has latest data. EU reader is promoted to primary. Global Writer Endpoint auto-routes to new primary.",
+  "graphId": "aurora-global-database",
+  "infrastructureId": "aurora-global",
+  "durationMs": 50000,
+  "tokenFlowConfig": {
+    "defaultEdgeDurationMs": 600,
+    "tokenTypes": [
+      { "id": "write", "shape": "circle", "color": "#f59e0b", "size": 12, "label": "Write" },
+      { "id": "storage-write", "shape": "square", "color": "#8b5cf6", "size": 8, "label": "Persist" },
+      { "id": "replication", "shape": "diamond", "color": "#22c55e", "size": 8, "label": "Replicate" }
+    ],
+    "edgeTimings": [
+      { "sourceNode": "us-shared-storage", "targetNode": "eu-shared-storage", "durationMs": 1000 }
+    ]
+  },
+  "algorithms": {
+    "pathSelector": {
+      "type": "static",
+      "config": {}
+    },
+    "fanOut": {
+      "type": "broadcast-replication",
+      "config": {
+        "nodeTypes": ["aurora-storage"],
+        "childTypeId": "replication"
+      }
+    }
+  },
+  "events": [
+    { "id": "set-primary", "timestampMs": 0, "action": "promote", "targetType": "instance", "targetId": "us-writer", "promotionRole": "primary" },
+    { "id": "write-1", "timestampMs": 1000, "action": "route-request", "targetType": "instance", "targetId": "us-shared-storage", "flowId": "write-to-us" },
+    { "id": "write-2", "timestampMs": 5000, "action": "route-request", "targetType": "instance", "targetId": "us-shared-storage", "flowId": "write-to-us" },
+    { "id": "write-3", "timestampMs": 9000, "action": "route-request", "targetType": "instance", "targetId": "us-shared-storage", "flowId": "write-to-us" },
+    { "id": "fail-region", "timestampMs": 14000, "action": "fail", "targetType": "region", "targetId": "region-us-east-1", "failureType": "region-outage", "failureMessage": "Region Unavailable", "cascadeEffect": { "propagateToChildren": true, "affectedResourceIds": ["us-az-1", "us-az-2", "us-writer", "us-reader-1", "us-shared-storage"] } },
+    { "id": "promote-eu", "timestampMs": 18000, "action": "promote", "targetType": "instance", "targetId": "eu-reader-1", "promotionRole": "primary" },
+    { "id": "write-4", "timestampMs": 22000, "action": "route-request", "targetType": "instance", "targetId": "eu-shared-storage", "flowId": "write-to-eu" },
+    { "id": "write-5", "timestampMs": 26000, "action": "route-request", "targetType": "instance", "targetId": "eu-shared-storage", "flowId": "write-to-eu" },
+    { "id": "write-6", "timestampMs": 30000, "action": "route-request", "targetType": "instance", "targetId": "eu-shared-storage", "flowId": "write-to-eu" },
+    { "id": "write-7", "timestampMs": 34000, "action": "route-request", "targetType": "instance", "targetId": "eu-shared-storage", "flowId": "write-to-eu" },
+    { "id": "write-8", "timestampMs": 38000, "action": "route-request", "targetType": "instance", "targetId": "eu-shared-storage", "flowId": "write-to-eu" },
+    { "id": "write-9", "timestampMs": 42000, "action": "route-request", "targetType": "instance", "targetId": "eu-shared-storage", "flowId": "write-to-eu" }
+  ],
+  "requestFlows": [
+    {
+      "id": "write-to-us",
+      "sourceLocation": "Application",
+      "targetServiceId": "us-shared-storage",
+      "path": ["client", "global-writer-endpoint", "region-us-east-1", "us-az-1", "us-writer", "us-shared-storage"],
+      "latencyMs": 50,
+      "status": "success",
+      "routingStrategy": "direct"
+    },
+    {
+      "id": "write-to-eu",
+      "sourceLocation": "Application",
+      "targetServiceId": "eu-shared-storage",
+      "path": ["client", "global-writer-endpoint", "region-eu-west-1", "eu-az-1", "eu-reader-1", "eu-shared-storage"],
+      "latencyMs": 100,
+      "status": "success",
+      "routingStrategy": "direct",
+      "visualState": "failover"
+    }
+  ],
+  "expectedOutcome": "Before failure: writes to US storage, async replication to EU (~1s). After US region fails: EU reader promoted to primary, writes go to EU storage. Application connection strings unchanged.",
+  "awsContext": {
+    "useCloudFront": false,
+    "useMultiAz": true,
+    "useAutoScaling": false,
+    "healthCheckEnabled": true
+  }
+}

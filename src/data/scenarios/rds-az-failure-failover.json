@@ -1,0 +1,67 @@
+{
+  "id": "rds-az-failure-failover",
+  "name": "RDS AZ Failure with Automatic Failover",
+  "description": "Normal writes flow to primary in AZ1. AZ1 fails, writes start failing. Automatic failover promotes reader in AZ2 to primary.",
+  "graphId": "rds-multi-az-cluster",
+  "infrastructureId": "rds-multi-az",
+  "durationMs": 25000,
+  "tokenFlowConfig": {
+    "defaultEdgeDurationMs": 800,
+    "tokenTypes": [
+      { "id": "write", "shape": "circle", "color": "#f59e0b", "size": 10, "label": "Write" },
+      { "id": "replication", "shape": "diamond", "color": "#8b5cf6", "size": 8, "label": "Repl" }
+    ]
+  },
+  "algorithms": {
+    "pathSelector": {
+      "type": "primary-aware"
+    },
+    "fanOut": {
+      "type": "quorum-replication",
+      "config": {
+        "nodeRoles": ["primary"],
+        "quorumRequired": 1,
+        "childTypeId": "replication"
+      }
+    }
+  },
+  "events": [
+    { "id": "init-primary", "timestampMs": 0, "action": "promote", "targetType": "instance", "targetId": "rds-writer", "promotionRole": "primary" },
+
+    { "id": "write-1", "timestampMs": 500, "action": "route-request", "targetType": "instance", "targetId": "rds-writer", "flowId": "write-flow" },
+    { "id": "write-2", "timestampMs": 2000, "action": "route-request", "targetType": "instance", "targetId": "rds-writer", "flowId": "write-flow" },
+    { "id": "write-3", "timestampMs": 3500, "action": "route-request", "targetType": "instance", "targetId": "rds-writer", "flowId": "write-flow" },
+
+    { "id": "az1-fails", "timestampMs": 5000, "action": "fail", "targetType": "az", "targetId": "az-use1-az1", "failureMessage": "AZ Unavailable" },
+
+    { "id": "write-4", "timestampMs": 6000, "action": "route-request", "targetType": "instance", "targetId": "rds-writer", "flowId": "write-flow" },
+    { "id": "write-5", "timestampMs": 7000, "action": "route-request", "targetType": "instance", "targetId": "rds-writer", "flowId": "write-flow" },
+
+    { "id": "failover-complete", "timestampMs": 10000, "action": "promote", "targetType": "instance", "targetId": "rds-reader-1", "promotionRole": "primary" },
+
+    { "id": "write-6", "timestampMs": 11000, "action": "route-request", "targetType": "instance", "targetId": "rds-reader-1", "flowId": "write-flow" },
+    { "id": "write-7", "timestampMs": 13000, "action": "route-request", "targetType": "instance", "targetId": "rds-reader-1", "flowId": "write-flow" },
+    { "id": "write-8", "timestampMs": 15000, "action": "route-request", "targetType": "instance", "targetId": "rds-reader-1", "flowId": "write-flow" },
+
+    { "id": "az1-recovers", "timestampMs": 20000, "action": "recover", "targetType": "az", "targetId": "az-use1-az1" }
+  ],
+  "requestFlows": [
+    {
+      "id": "write-flow",
+      "sourceLocation": "Application Client",
+      "targetServiceId": "rds-primary",
+      "path": ["client", "rds-endpoint", "region-us-east-1"],
+      "computePath": true,
+      "latencyMs": 50,
+      "status": "success",
+      "routingStrategy": "direct"
+    }
+  ],
+  "expectedOutcome": "Before failure: writes to primary via AZ1. During failure: writes fail at AZ1. After failover: writes route to promoted reader-1 in AZ2.",
+  "awsContext": {
+    "useCloudFront": false,
+    "useMultiAz": true,
+    "useAutoScaling": false,
+    "healthCheckEnabled": true
+  }
+}

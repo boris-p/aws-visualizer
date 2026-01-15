@@ -1,0 +1,65 @@
+{
+  "id": "rds-read-scaling",
+  "name": "RDS Read Scaling Across Replicas",
+  "description": "Read requests are distributed across all RDS instances (primary and readers) using round-robin load balancing",
+  "graphId": "rds-multi-az-cluster",
+  "infrastructureId": "rds-multi-az",
+  "durationMs": 20000,
+  "tokenFlowConfig": {
+    "defaultEdgeDurationMs": 600,
+    "tokenTypes": [
+      { "id": "read", "shape": "circle", "color": "#3b82f6", "size": 8, "label": "Read" }
+    ]
+  },
+  "algorithms": {
+    "pathSelector": { "type": "healthiest" },
+    "loadBalancer": { "type": "round-robin" }
+  },
+  "events": [
+    { "id": "read-1", "timestampMs": 500, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-2", "timestampMs": 1200, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-3", "timestampMs": 1900, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-4", "timestampMs": 2600, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-5", "timestampMs": 3300, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-6", "timestampMs": 4000, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-7", "timestampMs": 4700, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-8", "timestampMs": 5400, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-9", "timestampMs": 6100, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+
+    { "id": "reader2-degraded", "timestampMs": 8000, "action": "degrade", "targetType": "instance", "targetId": "rds-reader-2", "failureMessage": "High CPU" },
+
+    { "id": "read-10", "timestampMs": 9000, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-11", "timestampMs": 9700, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-12", "timestampMs": 10400, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-13", "timestampMs": 11100, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-14", "timestampMs": 11800, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+
+    { "id": "reader2-recovers", "timestampMs": 14000, "action": "recover", "targetType": "instance", "targetId": "rds-reader-2" },
+
+    { "id": "read-15", "timestampMs": 15000, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-16", "timestampMs": 15700, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" },
+    { "id": "read-17", "timestampMs": 16400, "action": "route-request", "targetType": "service", "targetId": "rds-cluster", "flowId": "read-flow" }
+  ],
+  "requestFlows": [
+    {
+      "id": "read-flow",
+      "sourceLocation": "Application Client",
+      "targetServiceId": "rds-cluster",
+      "path": ["client", "region-us-east-1"],
+      "computePath": true,
+      "latencyMs": 30,
+      "status": "success",
+      "routingStrategy": "direct",
+      "pathConstraints": {
+        "candidates": ["rds-writer", "rds-reader-1", "rds-reader-2"]
+      }
+    }
+  ],
+  "expectedOutcome": "Reads distributed evenly across all 3 instances. When reader-2 is degraded, traffic shifts to remaining healthy instances.",
+  "awsContext": {
+    "useCloudFront": false,
+    "useMultiAz": true,
+    "useAutoScaling": false,
+    "healthCheckEnabled": true
+  }
+}

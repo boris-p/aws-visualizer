@@ -15,6 +15,8 @@ import { getAvailableNodeTypes } from '@/utils/graphFilters'
 import awsGlobalInfrastructure from '@/data/graphs/aws-global-infrastructure.json'
 import ec2ScenarioPlayground from '@/data/graphs/ec2-scenario-playground.json'
 import ec2ScenarioPlaygroundDetailed from '@/data/graphs/ec2-scenario-playground-detailed.json'
+import rdsMultiAzCluster from '@/data/graphs/rds-multi-az-cluster.json'
+import auroraGlobalDatabase from '@/data/graphs/aurora-global-database.json'
 
 // Import scenarios
 import { scenarios as allScenariosData } from '@/data/scenarios'
@@ -103,7 +105,9 @@ export default function AWSVisualizerPage() {
     const loadedGraphs: GraphDefinition[] = [
       awsGlobalInfrastructure as GraphDefinition,
       ec2ScenarioPlayground as GraphDefinition,
-      ec2ScenarioPlaygroundDetailed as GraphDefinition
+      ec2ScenarioPlaygroundDetailed as GraphDefinition,
+      rdsMultiAzCluster as GraphDefinition,
+      auroraGlobalDatabase as GraphDefinition
     ]
     setGraphs(loadedGraphs)
 

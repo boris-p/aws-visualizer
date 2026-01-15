@@ -10,13 +10,14 @@ export type FailureType =
 export interface ScenarioEvent {
   id: string
   timestampMs: number
-  action: 'fail' | 'recover' | 'degrade' | 'route-request' | string // Extensible for custom actions
+  action: 'fail' | 'recover' | 'degrade' | 'route-request' | 'promote' | string // Extensible for custom actions
   targetType: NodeTargetType
   targetId: string
   failureType?: FailureType
   severity?: 'low' | 'medium' | 'high'
   flowId?: string  // Explicit reference to RequestFlow.id for route-request events
   failureMessage?: string // Sublabel text shown under failed nodes
+  promotionRole?: string // Role to promote to (e.g., "primary", "writer") for promote events
   cascadeEffect?: {
     propagateToChildren: boolean
     propagateToParent: boolean
@@ -104,6 +105,7 @@ export interface Scenario {
     pathSelector?: AlgorithmRef
     failoverStrategy?: AlgorithmRef
     consensus?: AlgorithmRef
+    fanOut?: AlgorithmRef  // Fan-out strategy for replication (e.g., quorum-replication)
   }
   // Token flow visualization configuration
   tokenFlowConfig?: TokenFlowConfigRef

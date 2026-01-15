@@ -122,3 +122,62 @@ export const geoAwarePathSelector: PathSelector = {
     return healthiestPathSelector.computePath(flow, context)
   }
 }
+
+// Primary-aware path selector - routes to the node with role: "primary"
+// Uses graph topology to find the path through the correct AZ
+// Expected graph structure: client → endpoint → region → AZ → DB
+export const primaryAwarePathSelector: PathSelector = {
+  id: 'primary-aware',
+  computePath(flow: RequestFlow, context: ScenarioExecutionContext): string[] {
+    const { graphTopology, nodeStates } = context
+    const basePath = flow.path || []
+
+    console.log(`[PathSelector] primary-aware: computing path for flow=${flow.id}`)
+
+    // Find the node with role: "primary"
+    let primaryNodeId: string | null = null
+    for (const [nodeId, state] of nodeStates) {
+      if (state.metadata?.role === 'primary') {
+        primaryNodeId = nodeId
+        break
+      }
+    }
+
+    console.log(`[PathSelector] primary-aware: found primary=${primaryNodeId}`)
+
+    if (!primaryNodeId) {
+      // No primary found - fall back to static path
+      console.log(`[PathSelector] primary-aware: no primary found, falling back to static`)
+      return staticPathSelector.computePath(flow, context)
+    }
+
+    // Find the AZ that leads to the primary by looking at incoming edges
+    const primaryAzId = graphTopology.edges.find(
+      (edge) => edge.target === primaryNodeId
+    )?.source
+
+    console.log(`[PathSelector] primary-aware: primary AZ=${primaryAzId}`)
+
+    if (!primaryAzId) {
+      console.log(`[PathSelector] primary-aware: no AZ found for primary`)
+      return [...basePath, primaryNodeId]
+    }
+
+    // Check if primary's AZ is available
+    const azState = nodeStates.get(primaryAzId)
+    if (azState?.status === 'unavailable') {
+      console.log(`[PathSelector] primary-aware: AZ ${primaryAzId} is unavailable`)
+      // AZ is unavailable - route to the AZ and fail there
+      // Path: client → endpoint → region → AZ (fail here)
+      const result = [...basePath, primaryAzId]
+      console.log(`[PathSelector] primary-aware: truncated path=[${result.join(' -> ')}]`)
+      return result
+    }
+
+    // Build the full path: basePath + AZ + primary
+    // basePath is typically: [client, endpoint, region]
+    const result = [...basePath, primaryAzId, primaryNodeId]
+    console.log(`[PathSelector] primary-aware: result=[${result.join(' -> ')}]`)
+    return result
+  }
+}

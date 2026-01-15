@@ -1,0 +1,224 @@
+{
+  "id": "rds-multi-az-cluster",
+  "name": "RDS Multi-AZ DB Cluster",
+  "description": "High availability RDS with 1 writer + 2 readable standbys across 3 AZs",
+  "nodes": [
+    {
+      "id": "client",
+      "label": "Client",
+      "type": "client",
+      "position": { "x": 50, "y": 200 },
+      "style": {
+        "background": "#dbeafe",
+        "border": "2px solid #3b82f6",
+        "borderRadius": "6px",
+        "padding": "10px 16px",
+        "fontSize": "12px",
+        "color": "#1e40af"
+      }
+    },
+    {
+      "id": "rds-endpoint",
+      "label": "RDS Endpoint",
+      "type": "dns-endpoint",
+      "position": { "x": 180, "y": 200 },
+      "style": {
+        "background": "#f0f9ff",
+        "border": "2px solid #0ea5e9",
+        "borderRadius": "6px",
+        "padding": "8px 14px",
+        "fontSize": "11px",
+        "color": "#0369a1"
+      }
+    },
+    {
+      "id": "region-us-east-1",
+      "label": "us-east-1",
+      "type": "region",
+      "position": { "x": 350, "y": 200 },
+      "style": {
+        "background": "#ffffff",
+        "border": "2px solid #0066cc",
+        "borderRadius": "6px",
+        "padding": "10px 20px",
+        "fontSize": "13px",
+        "color": "#0066cc"
+      }
+    },
+    {
+      "id": "az-use1-az1",
+      "label": "use1-az1",
+      "type": "az",
+      "position": { "x": 500, "y": 100 },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontSize": "11px",
+        "color": "#666",
+        "cursor": "pointer"
+      }
+    },
+    {
+      "id": "az-use1-az2",
+      "label": "use1-az2",
+      "type": "az",
+      "position": { "x": 500, "y": 200 },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontSize": "11px",
+        "color": "#666",
+        "cursor": "pointer"
+      }
+    },
+    {
+      "id": "az-use1-az3",
+      "label": "use1-az3",
+      "type": "az",
+      "position": { "x": 500, "y": 300 },
+      "isInteractive": true,
+      "style": {
+        "background": "#fafafa",
+        "border": "1.5px solid #d4d4d4",
+        "borderRadius": "4px",
+        "padding": "6px 14px",
+        "fontSize": "11px",
+        "color": "#666",
+        "cursor": "pointer"
+      }
+    },
+    {
+      "id": "rds-writer",
+      "label": "RDS Writer\n(Primary)",
+      "type": "rds-primary",
+      "position": { "x": 750, "y": 100 },
+      "isInteractive": true,
+      "style": {
+        "background": "#fef3c7",
+        "border": "2px solid #f59e0b",
+        "borderRadius": "6px",
+        "padding": "8px 14px",
+        "fontSize": "11px",
+        "color": "#92400e",
+        "cursor": "pointer"
+      }
+    },
+    {
+      "id": "rds-reader-1",
+      "label": "RDS Reader 1\n(Standby)",
+      "type": "rds-standby",
+      "position": { "x": 750, "y": 200 },
+      "isInteractive": true,
+      "style": {
+        "background": "#d1fae5",
+        "border": "2px solid #10b981",
+        "borderRadius": "6px",
+        "padding": "8px 14px",
+        "fontSize": "11px",
+        "color": "#065f46",
+        "cursor": "pointer"
+      }
+    },
+    {
+      "id": "rds-reader-2",
+      "label": "RDS Reader 2\n(Standby)",
+      "type": "rds-standby",
+      "position": { "x": 750, "y": 300 },
+      "isInteractive": true,
+      "style": {
+        "background": "#d1fae5",
+        "border": "2px solid #10b981",
+        "borderRadius": "6px",
+        "padding": "8px 14px",
+        "fontSize": "11px",
+        "color": "#065f46",
+        "cursor": "pointer"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "client-to-endpoint",
+      "source": "client",
+      "target": "rds-endpoint",
+      "type": "smoothstep",
+      "style": { "stroke": "#3b82f6", "strokeWidth": 1.5, "opacity": 0.4 }
+    },
+    {
+      "id": "endpoint-to-region",
+      "source": "rds-endpoint",
+      "target": "region-us-east-1",
+      "type": "smoothstep",
+      "style": { "stroke": "#0ea5e9", "strokeWidth": 1.5, "opacity": 0.3 }
+    },
+    {
+      "id": "region-to-az1",
+      "source": "region-us-east-1",
+      "target": "az-use1-az1",
+      "type": "smoothstep",
+      "style": { "stroke": "#0066cc", "strokeWidth": 1.5, "opacity": 0.3 }
+    },
+    {
+      "id": "region-to-az2",
+      "source": "region-us-east-1",
+      "target": "az-use1-az2",
+      "type": "smoothstep",
+      "style": { "stroke": "#0066cc", "strokeWidth": 1.5, "opacity": 0.3 }
+    },
+    {
+      "id": "region-to-az3",
+      "source": "region-us-east-1",
+      "target": "az-use1-az3",
+      "type": "smoothstep",
+      "style": { "stroke": "#0066cc", "strokeWidth": 1.5, "opacity": 0.3 }
+    },
+    {
+      "id": "az1-to-writer",
+      "source": "az-use1-az1",
+      "target": "rds-writer",
+      "type": "smoothstep",
+      "style": { "stroke": "#f59e0b", "strokeWidth": 1.5, "opacity": 0.3 }
+    },
+    {
+      "id": "az2-to-reader1",
+      "source": "az-use1-az2",
+      "target": "rds-reader-1",
+      "type": "smoothstep",
+      "style": { "stroke": "#10b981", "strokeWidth": 1.5, "opacity": 0.3 }
+    },
+    {
+      "id": "az3-to-reader2",
+      "source": "az-use1-az3",
+      "target": "rds-reader-2",
+      "type": "smoothstep",
+      "style": { "stroke": "#10b981", "strokeWidth": 1.5, "opacity": 0.3 }
+    },
+    {
+      "id": "writer-to-reader1",
+      "source": "rds-writer",
+      "target": "rds-reader-1",
+      "type": "smoothstep",
+      "style": { "stroke": "#8b5cf6", "strokeWidth": 2, "opacity": 0.5, "strokeDasharray": "5,5" }
+    },
+    {
+      "id": "writer-to-reader2",
+      "source": "rds-writer",
+      "target": "rds-reader-2",
+      "type": "smoothstep",
+      "style": { "stroke": "#8b5cf6", "strokeWidth": 2, "opacity": 0.5, "strokeDasharray": "5,5" }
+    },
+    {
+      "id": "reader1-to-reader2",
+      "source": "rds-reader-1",
+      "target": "rds-reader-2",
+      "type": "smoothstep",
+      "style": { "stroke": "#8b5cf6", "strokeWidth": 2, "opacity": 0.5, "strokeDasharray": "5,5" }
+    }
+  ]
+}

@@ -18,6 +18,7 @@ function createEmptyResult(): EventResult {
 }
 
 // Fail event handler - marks a node as unavailable
+// Supports cascadeEffect.affectedResourceIds for failing child resources
 export const failEventHandler: EventHandler = {
   action: 'fail',
   handle(event: ScenarioEvent, _context: ScenarioExecutionContext): EventResult {
@@ -25,6 +26,7 @@ export const failEventHandler: EventHandler = {
 
     console.log(`[EventHandler] FAIL event: targetId=${event.targetId}, timestampMs=${event.timestampMs}`)
 
+    // Mark the primary target as unavailable
     result.nodeStateChanges.set(event.targetId, {
       id: event.targetId,
       status: 'unavailable',
@@ -34,11 +36,27 @@ export const failEventHandler: EventHandler = {
       lastStateChange: event.timestampMs
     })
 
+    // Cascade to affected resources if configured
+    if (event.cascadeEffect?.affectedResourceIds) {
+      console.log(`[EventHandler] Cascading failure to: ${event.cascadeEffect.affectedResourceIds.join(', ')}`)
+      for (const resourceId of event.cascadeEffect.affectedResourceIds) {
+        result.nodeStateChanges.set(resourceId, {
+          id: resourceId,
+          status: 'unavailable',
+          sublabel: 'Cascade failure',
+          isAnimating: true,
+          animationType: 'failure',
+          lastStateChange: event.timestampMs
+        })
+      }
+    }
+
     return result
   }
 }
 
 // Recover event handler - marks a node as available again
+// Supports cascadeEffect.affectedResourceIds for recovering child resources
 export const recoverEventHandler: EventHandler = {
   action: 'recover',
   handle(event: ScenarioEvent, _context: ScenarioExecutionContext): EventResult {
@@ -52,6 +70,21 @@ export const recoverEventHandler: EventHandler = {
       animationType: undefined,
       lastStateChange: event.timestampMs
     })
+
+    // Cascade recovery to affected resources if configured
+    if (event.cascadeEffect?.affectedResourceIds) {
+      console.log(`[EventHandler] Cascading recovery to: ${event.cascadeEffect.affectedResourceIds.join(', ')}`)
+      for (const resourceId of event.cascadeEffect.affectedResourceIds) {
+        result.nodeStateChanges.set(resourceId, {
+          id: resourceId,
+          status: 'available',
+          sublabel: undefined,
+          isAnimating: false,
+          animationType: undefined,
+          lastStateChange: event.timestampMs
+        })
+      }
+    }
 
     return result
   }
@@ -69,6 +102,48 @@ export const degradeEventHandler: EventHandler = {
       sublabel: event.failureMessage || 'Degraded',
       isAnimating: true,
       animationType: 'pulse',
+      lastStateChange: event.timestampMs
+    })
+
+    return result
+  }
+}
+
+// Promote event handler - promotes a node to a role (e.g., primary)
+// Also demotes any other node that currently has that role
+export const promoteEventHandler: EventHandler = {
+  action: 'promote',
+  handle(event: ScenarioEvent, context: ScenarioExecutionContext): EventResult {
+    const result = createEmptyResult()
+    const role = event.promotionRole || 'primary'
+
+    console.log(`[EventHandler] PROMOTE event: targetId=${event.targetId}, role=${role}`)
+
+    // Find and demote any node that currently has this role
+    for (const [nodeId, nodeState] of context.nodeStates) {
+      const currentRole = nodeState.metadata?.role as string | undefined
+      if (currentRole === role && nodeId !== event.targetId) {
+        console.log(`[EventHandler] Demoting ${nodeId} from role=${role}`)
+        result.nodeStateChanges.set(nodeId, {
+          id: nodeId,
+          metadata: { ...nodeState.metadata, role: 'standby' },
+          sublabel: undefined,
+          isAnimating: false,
+          animationType: undefined,
+          lastStateChange: event.timestampMs
+        })
+      }
+    }
+
+    // Promote the target node
+    const existingState = context.nodeStates.get(event.targetId)
+    result.nodeStateChanges.set(event.targetId, {
+      id: event.targetId,
+      status: 'available',
+      metadata: { ...existingState?.metadata, role },
+      sublabel: role === 'primary' ? 'Primary' : undefined,
+      isAnimating: true,
+      animationType: 'promotion',
       lastStateChange: event.timestampMs
     })
 
@@ -150,6 +225,7 @@ const handlers: Map<string, EventHandler> = new Map([
   ['fail', failEventHandler],
   ['recover', recoverEventHandler],
   ['degrade', degradeEventHandler],
+  ['promote', promoteEventHandler],
   ['route-request', routeRequestHandler]
 ])
 

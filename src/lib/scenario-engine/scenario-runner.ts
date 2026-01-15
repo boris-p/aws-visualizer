@@ -5,6 +5,9 @@ import type {
   ScenarioExecutionContext,
   ScenarioSnapshot,
   EventResult,
+  FanOutStrategy,
+  FanOutConfig,
+  FanOutResult,
 } from '@/types/scenario-engine'
 import type { WaitPoint, Token, TokenFlowConfig, WaitPointState } from '@/types/token'
 import { processEvent } from './event-handlers'
@@ -21,6 +24,7 @@ import {
   getEdgeDuration,
   calculateTokenProgress,
 } from '@/types/token'
+import { algorithmRegistry } from '@/lib/algorithm-registry'
 
 export class ScenarioRunner {
   private scenario: Scenario
@@ -34,6 +38,8 @@ export class ScenarioRunner {
 
   // Token engine configuration
   private config: TokenFlowConfig = DEFAULT_TOKEN_FLOW_CONFIG
+  private fanOutStrategy: FanOutStrategy | null = null
+  private fanOutConfig: FanOutConfig | undefined = undefined
   private nextTokenId: number = 0
 
   constructor(scenario: Scenario, graphTopology?: GraphDefinition) {
@@ -74,6 +80,14 @@ export class ScenarioRunner {
           this.waitPointManager.setup(waitPoint)
         }
       }
+
+    }
+
+    // Set up fan-out strategy from algorithms config
+    const fanOutRef = this.scenario.algorithms?.fanOut
+    if (fanOutRef) {
+      this.fanOutStrategy = algorithmRegistry.getFanOutStrategy(fanOutRef.type) || null
+      this.fanOutConfig = fanOutRef.config as FanOutConfig | undefined
     }
 
     // Also check for legacy particleConfig
@@ -208,6 +222,9 @@ export class ScenarioRunner {
       // Then process wait points (release tokens that have waited long enough)
       this.processWaitPoints(timeMs)
 
+      // Check quorum for parent tokens waiting on fan-out
+      this.checkFanOutQuorums()
+
       // Check if state changed
       const tokensAfter = this.tokenManager.getAll().map((t) => `${t.id}:${t.status}:${t.currentEdgeIndex}`).join(',')
       if (tokensBefore === tokensAfter) {
@@ -258,6 +275,30 @@ export class ScenarioRunner {
 
     // Check if we've reached the end of the path
     if (nextEdgeIndex >= token.path.length - 1) {
+      const finalNode = token.path[token.path.length - 1]
+
+      // Check if the final node is unavailable - fail the token there
+      // This lets the token visually arrive at the unavailable node before failing
+      if (this.isNodeUnavailable(finalNode)) {
+        this.tokenManager.update(tokenId, { status: 'failed', progress: 1 })
+        return
+      }
+
+      // Check if fan-out strategy should trigger at this node
+      if (this.fanOutStrategy) {
+        const context = this.getContext()
+        const fanOutResult = this.fanOutStrategy.computeFanOut(finalNode, context, this.fanOutConfig)
+        if (fanOutResult.shouldFanOut) {
+          this.triggerFanOut(tokenId, fanOutResult, timeMs)
+          return
+        }
+      }
+
+      // Check if this is a child token that completed
+      if (token.parentTokenId) {
+        this.checkParentQuorum(token.parentTokenId)
+      }
+
       this.tokenManager.update(tokenId, { status: 'completed', progress: 1 })
       return
     }
@@ -265,14 +306,8 @@ export class ScenarioRunner {
     // Get the node we just arrived at
     const arrivedAtNode = token.path[nextEdgeIndex]
 
-    // Check if the next node in path is unavailable - fail the token
-    const nextNode = token.path[nextEdgeIndex + 1]
-    if (nextNode && this.isNodeUnavailable(nextNode)) {
-      this.tokenManager.update(tokenId, { status: 'failed' })
-      return
-    }
-
-    // Also check if the arrived node is unavailable
+    // Check if the arrived node is unavailable - fail the token AT that node
+    // We don't check ahead; we let the token travel to the unavailable node first
     if (this.isNodeUnavailable(arrivedAtNode)) {
       this.tokenManager.update(tokenId, { status: 'failed' })
       return
@@ -325,6 +360,136 @@ export class ScenarioRunner {
       waitingAtNode: undefined,
       waitPosition: undefined,
     })
+  }
+
+  // Trigger fan-out: create child tokens and put parent in waiting state
+  private triggerFanOut(
+    parentTokenId: string,
+    fanOutResult: FanOutResult,
+    timeMs: number
+  ): void {
+    const parentToken = this.tokenManager.get(parentTokenId)
+    if (!parentToken) return
+
+    const childTokenIds: string[] = []
+    const waitingAtNode = parentToken.path[parentToken.path.length - 1]
+
+    // Create child tokens for each path
+    for (const childPath of fanOutResult.childPaths) {
+      // Check if the first target node in child path is available
+      if (childPath.length > 1 && this.isNodeUnavailable(childPath[1])) {
+        // Create a failed child token
+        const childId = `token-${this.nextTokenId++}`
+        const childTypeId = fanOutResult.childTypeId || parentToken.typeId
+
+        const childToken: Token = {
+          id: childId,
+          typeId: childTypeId,
+          path: childPath,
+          currentEdgeIndex: 0,
+          status: 'failed',
+          emittedAtMs: timeMs,
+          currentSegmentStartMs: timeMs,
+          currentSegmentDurationMs: 0,
+          progress: 0,
+          parentTokenId,
+        }
+
+        this.tokenManager.add(childToken)
+        childTokenIds.push(childId)
+      } else {
+        // Create a traveling child token
+        const childId = `token-${this.nextTokenId++}`
+        const childTypeId = fanOutResult.childTypeId || parentToken.typeId
+        const firstEdgeDuration =
+          childPath.length > 1
+            ? getEdgeDuration(childPath[0], childPath[1], this.config)
+            : this.config.defaultEdgeDurationMs
+
+        const childToken: Token = {
+          id: childId,
+          typeId: childTypeId,
+          path: childPath,
+          currentEdgeIndex: 0,
+          status: 'traveling',
+          emittedAtMs: timeMs,
+          currentSegmentStartMs: timeMs,
+          currentSegmentDurationMs: firstEdgeDuration,
+          progress: 0,
+          parentTokenId,
+        }
+
+        this.tokenManager.add(childToken)
+        childTokenIds.push(childId)
+      }
+    }
+
+    // Update parent token with child references and put in waiting state
+    const quorumRequired = fanOutResult.quorumRequired
+
+    this.tokenManager.update(parentTokenId, {
+      status: 'waiting',
+      childTokenIds,
+      waitingAtNode,
+      progress: 1,
+      currentSegmentStartMs: timeMs,
+    })
+
+    // Store quorum requirement in algorithm state for this parent
+    this.store.updateSlice('algorithmState', (state) => {
+      const newState = new Map(state)
+      newState.set(`quorum:${parentTokenId}`, quorumRequired)
+      return newState
+    })
+
+    // Immediately check if quorum is already met (e.g., if all children failed)
+    this.checkParentQuorum(parentTokenId)
+  }
+
+  // Check if parent token has met its quorum and should complete
+  private checkParentQuorum(parentTokenId: string): void {
+    const parentToken = this.tokenManager.get(parentTokenId)
+    if (!parentToken || parentToken.status !== 'waiting' || !parentToken.childTokenIds) {
+      return
+    }
+
+    const algorithmState = this.store.getState().algorithmState
+    const quorumRequired = (algorithmState.get(`quorum:${parentTokenId}`) as number) ?? parentToken.childTokenIds.length
+
+    // Count completed and failed children
+    let completedCount = 0
+    let failedCount = 0
+
+    for (const childId of parentToken.childTokenIds) {
+      const childToken = this.tokenManager.get(childId)
+      if (childToken?.status === 'completed') {
+        completedCount++
+      } else if (childToken?.status === 'failed') {
+        failedCount++
+      }
+    }
+
+    // Check if quorum is met
+    if (completedCount >= quorumRequired) {
+      this.tokenManager.update(parentTokenId, { status: 'completed' })
+      return
+    }
+
+    // Check if quorum is impossible (too many failures)
+    const totalChildren = parentToken.childTokenIds.length
+    const maxPossibleCompletions = totalChildren - failedCount
+    if (maxPossibleCompletions < quorumRequired) {
+      this.tokenManager.update(parentTokenId, { status: 'failed' })
+    }
+  }
+
+  // Check all waiting parent tokens for quorum completion
+  private checkFanOutQuorums(): void {
+    for (const token of this.tokenManager.getByStatus('waiting')) {
+      if (token.childTokenIds && token.childTokenIds.length > 0) {
+        this.checkParentQuorum(token.id)
+      }
+    }
   }
 
   // Process wait points - release tokens based on timing
